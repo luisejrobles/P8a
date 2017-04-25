@@ -10,6 +10,8 @@
 
 char UART0_getchar(void);
 void delay(void);
+void escrito_line();
+void newLine();
 void UART0_Init(uint16_t mode);
 void UART0_gets(char *str);
 void UART0_putchar(char data);
@@ -22,36 +24,17 @@ int main(void)
 	uint16_t num;
 	UART0_Init(0);
 	
-	UART0_getchar();
 	inMTTY();
 	
-	UART0_putchar(10);
-	UART0_putchar(13);
 	UART0_gets(cad);
-	
-	UART0_putchar(10);
-	UART0_putchar(10);
-	UART0_putchar(13);
-	
-	UART0_putchar('E');
-	
-	UART0_putchar(10);
-	UART0_putchar(13);
+	escrito_line();
 	UART0_puts(cad);
-
-	//==============================
-	UART0_putchar(10);
-	UART0_putchar(10);
-	UART0_putchar(10);
-	UART0_putchar(13);
 }
-
 void delay(void) 
 { 
 	volatile unsigned int i;
 	for(i=0;i<0xffff;i++);
 }
-
 void UART0_Init(uint16_t mode)
 {
 	/*Función para inicializar el puerto serie del ATmega1280/2560 
@@ -69,53 +52,53 @@ void UART0_Init(uint16_t mode)
 		UBRR0 = 103;
 	}
 }
-
 char UART0_getchar(void)
 {	
 	while ( !(UCSR0A & (1<<RXC0)) );
-	putchar(UDR0);
 	return UDR0;
 	
 }
-
 void UART0_putchar(char data)
 {
 	while ( !(UCSR0A & (1<<UDRE0)) );	
 	UDR0 = data;
 }
-
 void UART0_gets(char *str)
 {
 	unsigned char c;
-	
+	unsigned int i=0;
 	do{
 		c = UART0_getchar();
-		if(c != 10)
+		if( (i<=18)&&(c!=8)&&(c!=13) )
 		{
+			UART0_putchar(c);
 			*str++ = c;
-			//*str++;
+			i++;
 		}
-	}while(c != 10);
-	
-	*str++ = '\0';
+		if( (c==8) && (i>0) )
+		{
+			UART0_putchar('\b');
+			UART0_putchar(' ');
+			UART0_putchar(8);
+			*str--='\0';
+			i--;
+		}
+	}while(c != 13);
+	*str = '\0';
 }
-
 void UART0_puts(char *str)
 {
 	while(*str)
 	{
-		putchar(*str++);
+		UART0_putchar(*str++);
 	}
 }
-
 void itoa(char *str, uint16_t number, uint8_t base)
 {
 }
-
-/*unsigned int atoi(char *str)
+unsigned int atoi(char *str)
 {
-}*/
-
+}
 void inMTTY()
 {
 	UART0_putchar('U');
@@ -173,5 +156,24 @@ void inMTTY()
 	UART0_putchar(10);
 	UART0_putchar(13);
 }
+void newLine(){
+	UART0_putchar(10);
+	UART0_putchar(13);
+}
+void escrito_line(){
+	newLine();
+	newLine();
+	newLine();
+	UART0_putchar('C');
+	UART0_putchar('A');
+	UART0_putchar('D');
+	UART0_putchar('E');
+	UART0_putchar('N');
+	UART0_putchar('A');
+	UART0_putchar(':');
+	UART0_putchar(' ');
+	newLine();
+}
+	
 
 
