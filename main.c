@@ -95,6 +95,15 @@ void UART0_puts(char *str)
 }
 void itoa(char *str, uint16_t number, uint8_t base)
 {
+	unsigned int cont = 0, cociente, residuo;
+	cociente = number
+	do{
+		cociente = cociente/base;
+		residuo = cociente%base;
+		
+			
+	}while( (cociente%base)==0 )
+	
 }
 unsigned int atoi(char *str)
 {
