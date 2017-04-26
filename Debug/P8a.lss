@@ -3,29 +3,29 @@ P8a.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800200  00800200  0000037c  2**0
+  0 .data         00000000  00800200  00800200  00000408  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000328  00000000  00000000  00000054  2**1
+  1 .text         000003b4  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  0000037c  2**0
+  2 .comment      00000030  00000000  00000000  00000408  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000003ac  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000438  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000078  00000000  00000000  000003ec  2**0
+  4 .debug_aranges 00000080  00000000  00000000  00000478  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00001428  00000000  00000000  00000464  2**0
+  5 .debug_info   00001500  00000000  00000000  000004f8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000ca9  00000000  00000000  0000188c  2**0
+  6 .debug_abbrev 00000cd7  00000000  00000000  000019f8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000612  00000000  00000000  00002535  2**0
+  7 .debug_line   0000068a  00000000  00000000  000026cf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000011c  00000000  00000000  00002b48  2**2
+  8 .debug_frame  00000140  00000000  00000000  00002d5c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000058a  00000000  00000000  00002c64  2**0
+  9 .debug_str    000005b2  00000000  00000000  00002e9c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000002a8  00000000  00000000  000031ee  2**0
+ 10 .debug_loc    00000432  00000000  00000000  0000344e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000068  00000000  00000000  00003496  2**0
+ 11 .debug_ranges 00000070  00000000  00000000  00003880  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -155,18 +155,18 @@ Disassembly of section .text:
   ee:	cd bf       	out	0x3d, r28	; 61
   f0:	00 e0       	ldi	r16, 0x00	; 0
   f2:	0c bf       	out	0x3c, r16	; 60
-  f4:	f7 d0       	rcall	.+494    	; 0x2e4 <main>
-  f6:	16 c1       	rjmp	.+556    	; 0x324 <_exit>
+  f4:	1e d1       	rcall	.+572    	; 0x332 <main>
+  f6:	5c c1       	rjmp	.+696    	; 0x3b0 <_exit>
 
 000000f8 <__bad_interrupt>:
   f8:	83 cf       	rjmp	.-250    	; 0x0 <__vectors>
 
 000000fa <UART0_Init>:
-void itoa(char *str, uint16_t number, uint8_t base)
-{
-}
-unsigned int atoi(char *str)
-{
+		if(**str != '\0');{
+			cont++;
+		}
+	}while(*str == '\0');
+	return cont;
 }
   fa:	22 e0       	ldi	r18, 0x02	; 2
   fc:	20 93 c0 00 	sts	0x00C0, r18	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7000c0>
@@ -278,246 +278,324 @@ unsigned int atoi(char *str)
  1d2:	cf 91       	pop	r28
  1d4:	08 95       	ret
 
-000001d6 <inMTTY>:
+000001d6 <itoa>:
+ 1d6:	0f 93       	push	r16
+ 1d8:	1f 93       	push	r17
+ 1da:	cf 93       	push	r28
+ 1dc:	df 93       	push	r29
+ 1de:	36 2f       	mov	r19, r22
+ 1e0:	27 2f       	mov	r18, r23
+ 1e2:	fc 01       	movw	r30, r24
+ 1e4:	c4 2f       	mov	r28, r20
+ 1e6:	d0 e0       	ldi	r29, 0x00	; 0
+ 1e8:	8f 01       	movw	r16, r30
+ 1ea:	83 2f       	mov	r24, r19
+ 1ec:	92 2f       	mov	r25, r18
+ 1ee:	be 01       	movw	r22, r28
+ 1f0:	cb d0       	rcall	.+406    	; 0x388 <__udivmodhi4>
+ 1f2:	36 2f       	mov	r19, r22
+ 1f4:	27 2f       	mov	r18, r23
+ 1f6:	8a 30       	cpi	r24, 0x0A	; 10
+ 1f8:	91 05       	cpc	r25, r1
+ 1fa:	18 f0       	brcs	.+6      	; 0x202 <itoa+0x2c>
+ 1fc:	8f 5b       	subi	r24, 0xBF	; 191
+ 1fe:	9f 4f       	sbci	r25, 0xFF	; 255
+ 200:	01 c0       	rjmp	.+2      	; 0x204 <itoa+0x2e>
+ 202:	c0 96       	adiw	r24, 0x30	; 48
+ 204:	d8 01       	movw	r26, r16
+ 206:	8c 93       	st	X, r24
+ 208:	31 96       	adiw	r30, 0x01	; 1
+ 20a:	83 2f       	mov	r24, r19
+ 20c:	92 2f       	mov	r25, r18
+ 20e:	be 01       	movw	r22, r28
+ 210:	bb d0       	rcall	.+374    	; 0x388 <__udivmodhi4>
+ 212:	89 2b       	or	r24, r25
+ 214:	49 f3       	breq	.-46     	; 0x1e8 <itoa+0x12>
+ 216:	f8 01       	movw	r30, r16
+ 218:	11 82       	std	Z+1, r1	; 0x01
+ 21a:	df 91       	pop	r29
+ 21c:	cf 91       	pop	r28
+ 21e:	1f 91       	pop	r17
+ 220:	0f 91       	pop	r16
+ 222:	08 95       	ret
+
+00000224 <inMTTY>:
 void inMTTY()
 {
 	UART0_putchar('U');
- 1d6:	85 e5       	ldi	r24, 0x55	; 85
+ 224:	85 e5       	ldi	r24, 0x55	; 85
 	UART0_putchar('N');
- 1d8:	b1 df       	rcall	.-158    	; 0x13c <UART0_putchar>
+ 226:	8a df       	rcall	.-236    	; 0x13c <UART0_putchar>
 	UART0_putchar('I');
- 1da:	8e e4       	ldi	r24, 0x4E	; 78
+ 228:	8e e4       	ldi	r24, 0x4E	; 78
 	UART0_putchar('V');
- 1dc:	af df       	rcall	.-162    	; 0x13c <UART0_putchar>
+ 22a:	88 df       	rcall	.-240    	; 0x13c <UART0_putchar>
 	UART0_putchar('E');
- 1de:	89 e4       	ldi	r24, 0x49	; 73
+ 22c:	89 e4       	ldi	r24, 0x49	; 73
 	UART0_putchar('R');
- 1e0:	ad df       	rcall	.-166    	; 0x13c <UART0_putchar>
+ 22e:	86 df       	rcall	.-244    	; 0x13c <UART0_putchar>
 	UART0_putchar('S');
- 1e2:	86 e5       	ldi	r24, 0x56	; 86
+ 230:	86 e5       	ldi	r24, 0x56	; 86
 	UART0_putchar('I');
- 1e4:	ab df       	rcall	.-170    	; 0x13c <UART0_putchar>
+ 232:	84 df       	rcall	.-248    	; 0x13c <UART0_putchar>
 	UART0_putchar('D');
- 1e6:	85 e4       	ldi	r24, 0x45	; 69
+ 234:	85 e4       	ldi	r24, 0x45	; 69
 	UART0_putchar('A');
- 1e8:	a9 df       	rcall	.-174    	; 0x13c <UART0_putchar>
+ 236:	82 df       	rcall	.-252    	; 0x13c <UART0_putchar>
 	UART0_putchar('D');
- 1ea:	82 e5       	ldi	r24, 0x52	; 82
+ 238:	82 e5       	ldi	r24, 0x52	; 82
 	UART0_putchar(' ');
- 1ec:	a7 df       	rcall	.-178    	; 0x13c <UART0_putchar>
+ 23a:	80 df       	rcall	.-256    	; 0x13c <UART0_putchar>
 	UART0_putchar('A');
- 1ee:	83 e5       	ldi	r24, 0x53	; 83
+ 23c:	83 e5       	ldi	r24, 0x53	; 83
 	UART0_putchar('U');
- 1f0:	a5 df       	rcall	.-182    	; 0x13c <UART0_putchar>
+ 23e:	7e df       	rcall	.-260    	; 0x13c <UART0_putchar>
 	UART0_putchar('T');
- 1f2:	89 e4       	ldi	r24, 0x49	; 73
+ 240:	89 e4       	ldi	r24, 0x49	; 73
 	UART0_putchar('O');
- 1f4:	a3 df       	rcall	.-186    	; 0x13c <UART0_putchar>
+ 242:	7c df       	rcall	.-264    	; 0x13c <UART0_putchar>
 	UART0_putchar('N');
- 1f6:	84 e4       	ldi	r24, 0x44	; 68
+ 244:	84 e4       	ldi	r24, 0x44	; 68
 	UART0_putchar('O');
- 1f8:	a1 df       	rcall	.-190    	; 0x13c <UART0_putchar>
+ 246:	7a df       	rcall	.-268    	; 0x13c <UART0_putchar>
 	UART0_putchar('M');
- 1fa:	81 e4       	ldi	r24, 0x41	; 65
+ 248:	81 e4       	ldi	r24, 0x41	; 65
 	UART0_putchar('A');
- 1fc:	9f df       	rcall	.-194    	; 0x13c <UART0_putchar>
+ 24a:	78 df       	rcall	.-272    	; 0x13c <UART0_putchar>
 	UART0_putchar(' ');
- 1fe:	84 e4       	ldi	r24, 0x44	; 68
+ 24c:	84 e4       	ldi	r24, 0x44	; 68
 	UART0_putchar('D');
- 200:	9d df       	rcall	.-198    	; 0x13c <UART0_putchar>
+ 24e:	76 df       	rcall	.-276    	; 0x13c <UART0_putchar>
 	UART0_putchar('E');
- 202:	80 e2       	ldi	r24, 0x20	; 32
+ 250:	80 e2       	ldi	r24, 0x20	; 32
 	UART0_putchar(' ');
- 204:	9b df       	rcall	.-202    	; 0x13c <UART0_putchar>
+ 252:	74 df       	rcall	.-280    	; 0x13c <UART0_putchar>
 	UART0_putchar('B');
- 206:	81 e4       	ldi	r24, 0x41	; 65
+ 254:	81 e4       	ldi	r24, 0x41	; 65
 	UART0_putchar('A');
- 208:	99 df       	rcall	.-206    	; 0x13c <UART0_putchar>
+ 256:	72 df       	rcall	.-284    	; 0x13c <UART0_putchar>
 	UART0_putchar('J');
- 20a:	85 e5       	ldi	r24, 0x55	; 85
+ 258:	85 e5       	ldi	r24, 0x55	; 85
 	UART0_putchar('A');
- 20c:	97 df       	rcall	.-210    	; 0x13c <UART0_putchar>
+ 25a:	70 df       	rcall	.-288    	; 0x13c <UART0_putchar>
 	UART0_putchar(' ');
- 20e:	84 e5       	ldi	r24, 0x54	; 84
+ 25c:	84 e5       	ldi	r24, 0x54	; 84
 	UART0_putchar('C');
- 210:	95 df       	rcall	.-214    	; 0x13c <UART0_putchar>
+ 25e:	6e df       	rcall	.-292    	; 0x13c <UART0_putchar>
 	UART0_putchar('A');
- 212:	8f e4       	ldi	r24, 0x4F	; 79
+ 260:	8f e4       	ldi	r24, 0x4F	; 79
 	UART0_putchar('L');
- 214:	93 df       	rcall	.-218    	; 0x13c <UART0_putchar>
+ 262:	6c df       	rcall	.-296    	; 0x13c <UART0_putchar>
 	UART0_putchar('I');
- 216:	8e e4       	ldi	r24, 0x4E	; 78
+ 264:	8e e4       	ldi	r24, 0x4E	; 78
 	UART0_putchar('F');
- 218:	91 df       	rcall	.-222    	; 0x13c <UART0_putchar>
+ 266:	6a df       	rcall	.-300    	; 0x13c <UART0_putchar>
 	UART0_putchar('O');
- 21a:	8f e4       	ldi	r24, 0x4F	; 79
+ 268:	8f e4       	ldi	r24, 0x4F	; 79
 	UART0_putchar('R');
- 21c:	8f df       	rcall	.-226    	; 0x13c <UART0_putchar>
+ 26a:	68 df       	rcall	.-304    	; 0x13c <UART0_putchar>
 	UART0_putchar('N');
- 21e:	8d e4       	ldi	r24, 0x4D	; 77
- 220:	8d df       	rcall	.-230    	; 0x13c <UART0_putchar>
- 222:	81 e4       	ldi	r24, 0x41	; 65
+ 26c:	8d e4       	ldi	r24, 0x4D	; 77
+ 26e:	66 df       	rcall	.-308    	; 0x13c <UART0_putchar>
+ 270:	81 e4       	ldi	r24, 0x41	; 65
 	UART0_putchar('I');
- 224:	8b df       	rcall	.-234    	; 0x13c <UART0_putchar>
- 226:	80 e2       	ldi	r24, 0x20	; 32
- 228:	89 df       	rcall	.-238    	; 0x13c <UART0_putchar>
+ 272:	64 df       	rcall	.-312    	; 0x13c <UART0_putchar>
+ 274:	80 e2       	ldi	r24, 0x20	; 32
+ 276:	62 df       	rcall	.-316    	; 0x13c <UART0_putchar>
 	UART0_putchar('A');
- 22a:	84 e4       	ldi	r24, 0x44	; 68
- 22c:	87 df       	rcall	.-242    	; 0x13c <UART0_putchar>
- 22e:	85 e4       	ldi	r24, 0x45	; 69
+ 278:	84 e4       	ldi	r24, 0x44	; 68
+ 27a:	60 df       	rcall	.-320    	; 0x13c <UART0_putchar>
+ 27c:	85 e4       	ldi	r24, 0x45	; 69
 	UART0_putchar(10);
- 230:	85 df       	rcall	.-246    	; 0x13c <UART0_putchar>
- 232:	80 e2       	ldi	r24, 0x20	; 32
- 234:	83 df       	rcall	.-250    	; 0x13c <UART0_putchar>
+ 27e:	5e df       	rcall	.-324    	; 0x13c <UART0_putchar>
+ 280:	80 e2       	ldi	r24, 0x20	; 32
+ 282:	5c df       	rcall	.-328    	; 0x13c <UART0_putchar>
 	UART0_putchar(13);	
- 236:	82 e4       	ldi	r24, 0x42	; 66
- 238:	81 df       	rcall	.-254    	; 0x13c <UART0_putchar>
- 23a:	81 e4       	ldi	r24, 0x41	; 65
+ 284:	82 e4       	ldi	r24, 0x42	; 66
+ 286:	5a df       	rcall	.-332    	; 0x13c <UART0_putchar>
+ 288:	81 e4       	ldi	r24, 0x41	; 65
 	UART0_putchar('P');
- 23c:	7f df       	rcall	.-258    	; 0x13c <UART0_putchar>
- 23e:	8a e4       	ldi	r24, 0x4A	; 74
- 240:	7d df       	rcall	.-262    	; 0x13c <UART0_putchar>
+ 28a:	58 df       	rcall	.-336    	; 0x13c <UART0_putchar>
+ 28c:	8a e4       	ldi	r24, 0x4A	; 74
+ 28e:	56 df       	rcall	.-340    	; 0x13c <UART0_putchar>
 	UART0_putchar('R');
- 242:	81 e4       	ldi	r24, 0x41	; 65
- 244:	7b df       	rcall	.-266    	; 0x13c <UART0_putchar>
- 246:	80 e2       	ldi	r24, 0x20	; 32
+ 290:	81 e4       	ldi	r24, 0x41	; 65
+ 292:	54 df       	rcall	.-344    	; 0x13c <UART0_putchar>
+ 294:	80 e2       	ldi	r24, 0x20	; 32
 	UART0_putchar('A');
- 248:	79 df       	rcall	.-270    	; 0x13c <UART0_putchar>
- 24a:	83 e4       	ldi	r24, 0x43	; 67
- 24c:	77 df       	rcall	.-274    	; 0x13c <UART0_putchar>
+ 296:	52 df       	rcall	.-348    	; 0x13c <UART0_putchar>
+ 298:	83 e4       	ldi	r24, 0x43	; 67
+ 29a:	50 df       	rcall	.-352    	; 0x13c <UART0_putchar>
 	UART0_putchar('C');
- 24e:	81 e4       	ldi	r24, 0x41	; 65
- 250:	75 df       	rcall	.-278    	; 0x13c <UART0_putchar>
- 252:	8c e4       	ldi	r24, 0x4C	; 76
+ 29c:	81 e4       	ldi	r24, 0x41	; 65
+ 29e:	4e df       	rcall	.-356    	; 0x13c <UART0_putchar>
+ 2a0:	8c e4       	ldi	r24, 0x4C	; 76
 	UART0_putchar('T');
- 254:	73 df       	rcall	.-282    	; 0x13c <UART0_putchar>
- 256:	89 e4       	ldi	r24, 0x49	; 73
- 258:	71 df       	rcall	.-286    	; 0x13c <UART0_putchar>
+ 2a2:	4c df       	rcall	.-360    	; 0x13c <UART0_putchar>
+ 2a4:	89 e4       	ldi	r24, 0x49	; 73
+ 2a6:	4a df       	rcall	.-364    	; 0x13c <UART0_putchar>
 	UART0_putchar('I');
- 25a:	86 e4       	ldi	r24, 0x46	; 70
- 25c:	6f df       	rcall	.-290    	; 0x13c <UART0_putchar>
- 25e:	8f e4       	ldi	r24, 0x4F	; 79
+ 2a8:	86 e4       	ldi	r24, 0x46	; 70
+ 2aa:	48 df       	rcall	.-368    	; 0x13c <UART0_putchar>
+ 2ac:	8f e4       	ldi	r24, 0x4F	; 79
 	UART0_putchar('C');
- 260:	6d df       	rcall	.-294    	; 0x13c <UART0_putchar>
- 262:	82 e5       	ldi	r24, 0x52	; 82
- 264:	6b df       	rcall	.-298    	; 0x13c <UART0_putchar>
+ 2ae:	46 df       	rcall	.-372    	; 0x13c <UART0_putchar>
+ 2b0:	82 e5       	ldi	r24, 0x52	; 82
+ 2b2:	44 df       	rcall	.-376    	; 0x13c <UART0_putchar>
 	UART0_putchar('A');
- 266:	8e e4       	ldi	r24, 0x4E	; 78
- 268:	69 df       	rcall	.-302    	; 0x13c <UART0_putchar>
- 26a:	89 e4       	ldi	r24, 0x49	; 73
+ 2b4:	8e e4       	ldi	r24, 0x4E	; 78
+ 2b6:	42 df       	rcall	.-380    	; 0x13c <UART0_putchar>
+ 2b8:	89 e4       	ldi	r24, 0x49	; 73
 	UART0_putchar(' ');
- 26c:	67 df       	rcall	.-306    	; 0x13c <UART0_putchar>
- 26e:	81 e4       	ldi	r24, 0x41	; 65
- 270:	65 df       	rcall	.-310    	; 0x13c <UART0_putchar>
+ 2ba:	40 df       	rcall	.-384    	; 0x13c <UART0_putchar>
+ 2bc:	81 e4       	ldi	r24, 0x41	; 65
+ 2be:	3e df       	rcall	.-388    	; 0x13c <UART0_putchar>
 	UART0_putchar('8');
- 272:	8a e0       	ldi	r24, 0x0A	; 10
- 274:	63 df       	rcall	.-314    	; 0x13c <UART0_putchar>
- 276:	8d e0       	ldi	r24, 0x0D	; 13
+ 2c0:	8a e0       	ldi	r24, 0x0A	; 10
+ 2c2:	3c df       	rcall	.-392    	; 0x13c <UART0_putchar>
+ 2c4:	8d e0       	ldi	r24, 0x0D	; 13
 	UART0_putchar('a');
- 278:	61 df       	rcall	.-318    	; 0x13c <UART0_putchar>
- 27a:	80 e5       	ldi	r24, 0x50	; 80
- 27c:	5f df       	rcall	.-322    	; 0x13c <UART0_putchar>
+ 2c6:	3a df       	rcall	.-396    	; 0x13c <UART0_putchar>
+ 2c8:	80 e5       	ldi	r24, 0x50	; 80
+ 2ca:	38 df       	rcall	.-400    	; 0x13c <UART0_putchar>
 	UART0_putchar(10);
- 27e:	82 e5       	ldi	r24, 0x52	; 82
- 280:	5d df       	rcall	.-326    	; 0x13c <UART0_putchar>
- 282:	81 e4       	ldi	r24, 0x41	; 65
+ 2cc:	82 e5       	ldi	r24, 0x52	; 82
+ 2ce:	36 df       	rcall	.-404    	; 0x13c <UART0_putchar>
+ 2d0:	81 e4       	ldi	r24, 0x41	; 65
 	UART0_putchar(13);
- 284:	5b df       	rcall	.-330    	; 0x13c <UART0_putchar>
- 286:	83 e4       	ldi	r24, 0x43	; 67
- 288:	59 df       	rcall	.-334    	; 0x13c <UART0_putchar>
- 28a:	84 e5       	ldi	r24, 0x54	; 84
- 28c:	57 df       	rcall	.-338    	; 0x13c <UART0_putchar>
- 28e:	89 e4       	ldi	r24, 0x49	; 73
- 290:	55 df       	rcall	.-342    	; 0x13c <UART0_putchar>
- 292:	83 e4       	ldi	r24, 0x43	; 67
- 294:	53 df       	rcall	.-346    	; 0x13c <UART0_putchar>
- 296:	81 e4       	ldi	r24, 0x41	; 65
- 298:	51 df       	rcall	.-350    	; 0x13c <UART0_putchar>
- 29a:	80 e2       	ldi	r24, 0x20	; 32
- 29c:	4f df       	rcall	.-354    	; 0x13c <UART0_putchar>
- 29e:	88 e3       	ldi	r24, 0x38	; 56
- 2a0:	4d df       	rcall	.-358    	; 0x13c <UART0_putchar>
- 2a2:	81 e6       	ldi	r24, 0x61	; 97
- 2a4:	4b df       	rcall	.-362    	; 0x13c <UART0_putchar>
- 2a6:	8a e0       	ldi	r24, 0x0A	; 10
- 2a8:	49 df       	rcall	.-366    	; 0x13c <UART0_putchar>
- 2aa:	8d e0       	ldi	r24, 0x0D	; 13
- 2ac:	47 cf       	rjmp	.-370    	; 0x13c <UART0_putchar>
- 2ae:	08 95       	ret
+ 2d2:	34 df       	rcall	.-408    	; 0x13c <UART0_putchar>
+ 2d4:	83 e4       	ldi	r24, 0x43	; 67
+ 2d6:	32 df       	rcall	.-412    	; 0x13c <UART0_putchar>
+ 2d8:	84 e5       	ldi	r24, 0x54	; 84
+ 2da:	30 df       	rcall	.-416    	; 0x13c <UART0_putchar>
+ 2dc:	89 e4       	ldi	r24, 0x49	; 73
+ 2de:	2e df       	rcall	.-420    	; 0x13c <UART0_putchar>
+ 2e0:	83 e4       	ldi	r24, 0x43	; 67
+ 2e2:	2c df       	rcall	.-424    	; 0x13c <UART0_putchar>
+ 2e4:	81 e4       	ldi	r24, 0x41	; 65
+ 2e6:	2a df       	rcall	.-428    	; 0x13c <UART0_putchar>
+ 2e8:	80 e2       	ldi	r24, 0x20	; 32
+ 2ea:	28 df       	rcall	.-432    	; 0x13c <UART0_putchar>
+ 2ec:	88 e3       	ldi	r24, 0x38	; 56
+ 2ee:	26 df       	rcall	.-436    	; 0x13c <UART0_putchar>
+ 2f0:	81 e6       	ldi	r24, 0x61	; 97
+ 2f2:	24 df       	rcall	.-440    	; 0x13c <UART0_putchar>
+ 2f4:	8a e0       	ldi	r24, 0x0A	; 10
+ 2f6:	22 df       	rcall	.-444    	; 0x13c <UART0_putchar>
+ 2f8:	8d e0       	ldi	r24, 0x0D	; 13
+ 2fa:	20 cf       	rjmp	.-448    	; 0x13c <UART0_putchar>
+ 2fc:	08 95       	ret
 
-000002b0 <newLine>:
+000002fe <newLine>:
 }
 void newLine(){
 	UART0_putchar(10);
- 2b0:	8a e0       	ldi	r24, 0x0A	; 10
+ 2fe:	8a e0       	ldi	r24, 0x0A	; 10
 	UART0_putchar(13);
- 2b2:	44 df       	rcall	.-376    	; 0x13c <UART0_putchar>
- 2b4:	8d e0       	ldi	r24, 0x0D	; 13
- 2b6:	42 cf       	rjmp	.-380    	; 0x13c <UART0_putchar>
- 2b8:	08 95       	ret
+ 300:	1d df       	rcall	.-454    	; 0x13c <UART0_putchar>
+ 302:	8d e0       	ldi	r24, 0x0D	; 13
+ 304:	1b cf       	rjmp	.-458    	; 0x13c <UART0_putchar>
+ 306:	08 95       	ret
 
-000002ba <escrito_line>:
+00000308 <escrito_line>:
 }
 void escrito_line(){
 	newLine();
- 2ba:	fa df       	rcall	.-12     	; 0x2b0 <newLine>
- 2bc:	f9 df       	rcall	.-14     	; 0x2b0 <newLine>
- 2be:	f8 df       	rcall	.-16     	; 0x2b0 <newLine>
- 2c0:	83 e4       	ldi	r24, 0x43	; 67
- 2c2:	3c df       	rcall	.-392    	; 0x13c <UART0_putchar>
- 2c4:	81 e4       	ldi	r24, 0x41	; 65
- 2c6:	3a df       	rcall	.-396    	; 0x13c <UART0_putchar>
- 2c8:	84 e4       	ldi	r24, 0x44	; 68
- 2ca:	38 df       	rcall	.-400    	; 0x13c <UART0_putchar>
- 2cc:	85 e4       	ldi	r24, 0x45	; 69
- 2ce:	36 df       	rcall	.-404    	; 0x13c <UART0_putchar>
- 2d0:	8e e4       	ldi	r24, 0x4E	; 78
- 2d2:	34 df       	rcall	.-408    	; 0x13c <UART0_putchar>
- 2d4:	81 e4       	ldi	r24, 0x41	; 65
- 2d6:	32 df       	rcall	.-412    	; 0x13c <UART0_putchar>
- 2d8:	8a e3       	ldi	r24, 0x3A	; 58
- 2da:	30 df       	rcall	.-416    	; 0x13c <UART0_putchar>
- 2dc:	80 e2       	ldi	r24, 0x20	; 32
- 2de:	2e df       	rcall	.-420    	; 0x13c <UART0_putchar>
- 2e0:	e7 cf       	rjmp	.-50     	; 0x2b0 <newLine>
- 2e2:	08 95       	ret
+ 308:	fa df       	rcall	.-12     	; 0x2fe <newLine>
+ 30a:	f9 df       	rcall	.-14     	; 0x2fe <newLine>
+ 30c:	f8 df       	rcall	.-16     	; 0x2fe <newLine>
+ 30e:	83 e4       	ldi	r24, 0x43	; 67
+ 310:	15 df       	rcall	.-470    	; 0x13c <UART0_putchar>
+ 312:	81 e4       	ldi	r24, 0x41	; 65
+ 314:	13 df       	rcall	.-474    	; 0x13c <UART0_putchar>
+ 316:	84 e4       	ldi	r24, 0x44	; 68
+ 318:	11 df       	rcall	.-478    	; 0x13c <UART0_putchar>
+ 31a:	85 e4       	ldi	r24, 0x45	; 69
+ 31c:	0f df       	rcall	.-482    	; 0x13c <UART0_putchar>
+ 31e:	8e e4       	ldi	r24, 0x4E	; 78
+ 320:	0d df       	rcall	.-486    	; 0x13c <UART0_putchar>
+ 322:	81 e4       	ldi	r24, 0x41	; 65
+ 324:	0b df       	rcall	.-490    	; 0x13c <UART0_putchar>
+ 326:	8a e3       	ldi	r24, 0x3A	; 58
+ 328:	09 df       	rcall	.-494    	; 0x13c <UART0_putchar>
+ 32a:	80 e2       	ldi	r24, 0x20	; 32
+ 32c:	07 df       	rcall	.-498    	; 0x13c <UART0_putchar>
+ 32e:	e7 cf       	rjmp	.-50     	; 0x2fe <newLine>
+ 330:	08 95       	ret
 
-000002e4 <main>:
- 2e4:	cf 93       	push	r28
- 2e6:	df 93       	push	r29
- 2e8:	cd b7       	in	r28, 0x3d	; 61
- 2ea:	de b7       	in	r29, 0x3e	; 62
- 2ec:	64 97       	sbiw	r28, 0x14	; 20
- 2ee:	0f b6       	in	r0, 0x3f	; 63
- 2f0:	f8 94       	cli
- 2f2:	de bf       	out	0x3e, r29	; 62
- 2f4:	0f be       	out	0x3f, r0	; 63
- 2f6:	cd bf       	out	0x3d, r28	; 61
- 2f8:	80 e0       	ldi	r24, 0x00	; 0
- 2fa:	90 e0       	ldi	r25, 0x00	; 0
- 2fc:	fe de       	rcall	.-516    	; 0xfa <UART0_Init>
- 2fe:	6b df       	rcall	.-298    	; 0x1d6 <inMTTY>
- 300:	ce 01       	movw	r24, r28
- 302:	01 96       	adiw	r24, 0x01	; 1
- 304:	23 df       	rcall	.-442    	; 0x14c <UART0_gets>
- 306:	d9 df       	rcall	.-78     	; 0x2ba <escrito_line>
- 308:	ce 01       	movw	r24, r28
- 30a:	01 96       	adiw	r24, 0x01	; 1
- 30c:	56 df       	rcall	.-340    	; 0x1ba <UART0_puts>
- 30e:	80 e0       	ldi	r24, 0x00	; 0
- 310:	90 e0       	ldi	r25, 0x00	; 0
- 312:	64 96       	adiw	r28, 0x14	; 20
- 314:	0f b6       	in	r0, 0x3f	; 63
- 316:	f8 94       	cli
- 318:	de bf       	out	0x3e, r29	; 62
- 31a:	0f be       	out	0x3f, r0	; 63
- 31c:	cd bf       	out	0x3d, r28	; 61
- 31e:	df 91       	pop	r29
- 320:	cf 91       	pop	r28
- 322:	08 95       	ret
+00000332 <main>:
+ 332:	cf 93       	push	r28
+ 334:	df 93       	push	r29
+ 336:	cd b7       	in	r28, 0x3d	; 61
+ 338:	de b7       	in	r29, 0x3e	; 62
+ 33a:	6e 97       	sbiw	r28, 0x1e	; 30
+ 33c:	0f b6       	in	r0, 0x3f	; 63
+ 33e:	f8 94       	cli
+ 340:	de bf       	out	0x3e, r29	; 62
+ 342:	0f be       	out	0x3f, r0	; 63
+ 344:	cd bf       	out	0x3d, r28	; 61
+ 346:	80 e0       	ldi	r24, 0x00	; 0
+ 348:	90 e0       	ldi	r25, 0x00	; 0
+ 34a:	d7 de       	rcall	.-594    	; 0xfa <UART0_Init>
+ 34c:	6b df       	rcall	.-298    	; 0x224 <inMTTY>
+ 34e:	ce 01       	movw	r24, r28
+ 350:	01 96       	adiw	r24, 0x01	; 1
+ 352:	fc de       	rcall	.-520    	; 0x14c <UART0_gets>
+ 354:	d9 df       	rcall	.-78     	; 0x308 <escrito_line>
+ 356:	ce 01       	movw	r24, r28
+ 358:	01 96       	adiw	r24, 0x01	; 1
+ 35a:	2f df       	rcall	.-418    	; 0x1ba <UART0_puts>
+ 35c:	40 e1       	ldi	r20, 0x10	; 16
+ 35e:	50 e0       	ldi	r21, 0x00	; 0
+ 360:	6f ef       	ldi	r22, 0xFF	; 255
+ 362:	70 e0       	ldi	r23, 0x00	; 0
+ 364:	ce 01       	movw	r24, r28
+ 366:	45 96       	adiw	r24, 0x15	; 21
+ 368:	36 df       	rcall	.-404    	; 0x1d6 <itoa>
+ 36a:	c9 df       	rcall	.-110    	; 0x2fe <newLine>
+ 36c:	ce 01       	movw	r24, r28
+ 36e:	45 96       	adiw	r24, 0x15	; 21
+ 370:	24 df       	rcall	.-440    	; 0x1ba <UART0_puts>
+ 372:	80 e0       	ldi	r24, 0x00	; 0
+ 374:	90 e0       	ldi	r25, 0x00	; 0
+ 376:	6e 96       	adiw	r28, 0x1e	; 30
+ 378:	0f b6       	in	r0, 0x3f	; 63
+ 37a:	f8 94       	cli
+ 37c:	de bf       	out	0x3e, r29	; 62
+ 37e:	0f be       	out	0x3f, r0	; 63
+ 380:	cd bf       	out	0x3d, r28	; 61
+ 382:	df 91       	pop	r29
+ 384:	cf 91       	pop	r28
+ 386:	08 95       	ret
 
-00000324 <_exit>:
- 324:	f8 94       	cli
+00000388 <__udivmodhi4>:
+ 388:	aa 1b       	sub	r26, r26
+ 38a:	bb 1b       	sub	r27, r27
+ 38c:	51 e1       	ldi	r21, 0x11	; 17
+ 38e:	07 c0       	rjmp	.+14     	; 0x39e <__udivmodhi4_ep>
 
-00000326 <__stop_program>:
- 326:	ff cf       	rjmp	.-2      	; 0x326 <__stop_program>
+00000390 <__udivmodhi4_loop>:
+ 390:	aa 1f       	adc	r26, r26
+ 392:	bb 1f       	adc	r27, r27
+ 394:	a6 17       	cp	r26, r22
+ 396:	b7 07       	cpc	r27, r23
+ 398:	10 f0       	brcs	.+4      	; 0x39e <__udivmodhi4_ep>
+ 39a:	a6 1b       	sub	r26, r22
+ 39c:	b7 0b       	sbc	r27, r23
+
+0000039e <__udivmodhi4_ep>:
+ 39e:	88 1f       	adc	r24, r24
+ 3a0:	99 1f       	adc	r25, r25
+ 3a2:	5a 95       	dec	r21
+ 3a4:	a9 f7       	brne	.-22     	; 0x390 <__udivmodhi4_loop>
+ 3a6:	80 95       	com	r24
+ 3a8:	90 95       	com	r25
+ 3aa:	bc 01       	movw	r22, r24
+ 3ac:	cd 01       	movw	r24, r26
+ 3ae:	08 95       	ret
+
+000003b0 <_exit>:
+ 3b0:	f8 94       	cli
+
+000003b2 <__stop_program>:
+ 3b2:	ff cf       	rjmp	.-2      	; 0x3b2 <__stop_program>

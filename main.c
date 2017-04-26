@@ -9,6 +9,7 @@
 #define my_UBRR(bauds) 16000000/8/bauds-1
 
 char UART0_getchar(void);
+unsigned int cuentaChar(char **str);
 void delay(void);
 void escrito_line();
 void newLine();
@@ -21,14 +22,16 @@ void inMTTY();
 int main(void) 
 { 
 	char cad[20];
+	char numcad[10];
 	uint16_t num;
 	UART0_Init(0);
-	
 	inMTTY();
-	
 	UART0_gets(cad);
 	escrito_line();
 	UART0_puts(cad);
+	itoa(numcad,255,16);
+	newLine();
+	UART0_puts(numcad);
 }
 void delay(void) 
 { 
@@ -95,18 +98,34 @@ void UART0_puts(char *str)
 }
 void itoa(char *str, uint16_t number, uint8_t base)
 {
-	unsigned int cont = 0, cociente, residuo;
-	cociente = number
+	unsigned int cociente, residuo;
+	cociente = number;
 	do{
-		cociente = cociente/base;
 		residuo = cociente%base;
-		
-			
-	}while( (cociente%base)==0 )
-	
+		cociente = cociente/base;
+		if(residuo > 9)
+		{
+			residuo = residuo + 'A';
+		}else{
+			residuo = residuo + '0';
+		}
+		*str++ = residuo;
+	}while( (cociente%base)==0 );
+	*str= '\0';
 }
 unsigned int atoi(char *str)
 {
+	
+}
+unsigned int cuentaChar(char **str)
+{
+	unsigned int cont = 0;
+	do{
+		if(**str != '\0');{
+			cont++;
+		}
+	}while(*str == '\0');
+	return cont;
 }
 void inMTTY()
 {
