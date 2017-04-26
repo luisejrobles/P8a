@@ -127,21 +127,20 @@ void itoa(char *str, uint16_t number, uint8_t base)
 }
 unsigned int atoi(char *str)
 {
-	unsigned int num, exp = 1;
+	unsigned int num = 0, exp = 1, val;
 	while(*str)
 	{
 		*str++;
 	}
-	
+	while(str != 0)
+	{
+		val = *--str - '0';
+		num = num+ (val * exp);
+		exp = exp*10;	
+	}
 	return num;
 }
-void invierteNumCad(char *str, int max)
-{
-	unsigned int contMax = 0;
-	char maxStr = *(str + max);
-	
-	
-}
+
 unsigned int cuentaChar(char *str)
 {
 	unsigned int cont = 0;

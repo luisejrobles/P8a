@@ -13,9 +13,7 @@ Discarded input sections
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
  .text.delay    0x00000000       0x34 main.o
- .text.atoi     0x00000000       0x20 main.o
- .text.invierteNumCad
-                0x00000000        0x2 main.o
+ .text.atoi     0x00000000       0x5e main.o
  .text.cuentaChar
                 0x00000000       0x3a main.o
  .text          0x00000000        0x0 d:/program files (x86)/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
@@ -432,42 +430,42 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x88
+.debug_aranges  0x00000000       0x80
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x88 main.o
+                0x00000000       0x80 main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x159b
+.debug_info     0x00000000     0x1542
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc D:/Program Files (x86)/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_info    0x00000bbc      0x9df main.o
+ .debug_info    0x00000bbc      0x986 main.o
 
-.debug_abbrev   0x00000000      0xcd0
+.debug_abbrev   0x00000000      0xcb2
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0xb1a D:/Program Files (x86)/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_abbrev  0x00000b1a      0x1b6 main.o
+ .debug_abbrev  0x00000b1a      0x198 main.o
 
-.debug_line     0x00000000      0x6c6
+.debug_line     0x00000000      0x6c1
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x1f9 D:/Program Files (x86)/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_line    0x000001f9      0x4cd main.o
+ .debug_line    0x000001f9      0x4c8 main.o
 
-.debug_frame    0x00000000      0x15c
+.debug_frame    0x00000000      0x14c
  *(.debug_frame)
- .debug_frame   0x00000000      0x15c main.o
+ .debug_frame   0x00000000      0x14c main.o
 
-.debug_str      0x00000000      0x5db
+.debug_str      0x00000000      0x5b2
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 D:/Program Files (x86)/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_str     0x000003e6      0x1f5 main.o
-                                0x22e (size before relaxing)
+ .debug_str     0x000003e6      0x1cc main.o
+                                0x205 (size before relaxing)
 
-.debug_loc      0x00000000      0x501
+.debug_loc      0x00000000      0x5a5
  *(.debug_loc)
- .debug_loc     0x00000000      0x501 main.o
+ .debug_loc     0x00000000      0x5a5 main.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -487,9 +485,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x78
+.debug_ranges   0x00000000       0x70
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x78 main.o
+ .debug_ranges  0x00000000       0x70 main.o
 
 .debug_macro
  *(.debug_macro)
