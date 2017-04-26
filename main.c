@@ -4,14 +4,15 @@
 	Jimenez Robles Luis Eduardo		01208396
 	Práctica 8a 
 */
-
 #include <avr/io.h>
 #define my_UBRR(bauds) 16000000/8/bauds-1
 
 char UART0_getchar(void);
-unsigned int cuentaChar(char **str);
+unsigned int cuentaChar(char *str);
 void delay(void);
 void escrito_line();
+void itoa(char *str, uint16_t number, uint8_t base);
+void invierteNumCad(char *str, int max);
 void newLine();
 void UART0_Init(uint16_t mode);
 void UART0_gets(char *str);
@@ -23,15 +24,25 @@ int main(void)
 { 
 	char cad[20];
 	char numcad[10];
-	uint16_t num;
+	//uint16_t num;
 	UART0_Init(0);
 	inMTTY();
 	UART0_gets(cad);
 	escrito_line();
 	UART0_puts(cad);
-	itoa(numcad,255,16);
+	itoa(numcad,239,10);
 	newLine();
 	UART0_puts(numcad);
+	
+	
+	/*
+	newLine();
+	cuentaChar(numcad);
+	newLine();
+	invierteNumCad(numcad,cuentaChar(numcad));
+	newLine();
+	UART0_puts(numcad);
+	*/
 }
 void delay(void) 
 { 
@@ -99,32 +110,51 @@ void UART0_puts(char *str)
 void itoa(char *str, uint16_t number, uint8_t base)
 {
 	unsigned int cociente, residuo;
+	unsigned char c;
 	cociente = number;
 	do{
 		residuo = cociente%base;
 		cociente = cociente/base;
 		if(residuo > 9)
 		{
-			residuo = residuo + 'A';
+			c = residuo + 55;
 		}else{
-			residuo = residuo + '0';
+			c = residuo + '0';
 		}
-		*str++ = residuo;
-	}while( (cociente%base)==0 );
+		*str++ = c;
+	}while( cociente != 0 );
 	*str= '\0';
 }
 unsigned int atoi(char *str)
 {
+	unsigned int num, exp = 1;
+	while(*str)
+	{
+		*str++;
+	}
+	
+	return num;
+}
+void invierteNumCad(char *str, int max)
+{
+	unsigned int contMax = 0;
+	char maxStr = *(str + max);
+	
 	
 }
-unsigned int cuentaChar(char **str)
+unsigned int cuentaChar(char *str)
 {
 	unsigned int cont = 0;
-	do{
-		if(**str != '\0');{
-			cont++;
-		}
-	}while(*str == '\0');
+	unsigned char c;
+	while(*str)
+	{
+		*str++;
+		cont++;
+	}
+	c = cont + '0';
+	newLine();
+	UART0_putchar(' ');
+	UART0_putchar(c);
 	return cont;
 }
 void inMTTY()
@@ -189,7 +219,6 @@ void newLine(){
 	UART0_putchar(13);
 }
 void escrito_line(){
-	newLine();
 	newLine();
 	newLine();
 	UART0_putchar('C');
