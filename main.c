@@ -7,6 +7,7 @@
 #include <avr/io.h>
 #define my_UBRR(bauds) 16000000/8/bauds-1
 
+char pop( void );
 char UART0_getchar(void);
 unsigned int cuentaChar(char *str);
 void delay(void);
@@ -14,6 +15,7 @@ void escrito_line();
 void itoa(char *str, uint16_t number, uint8_t base);
 void invierteNumCad(char *str, int max);
 void newLine();
+void push(char c);
 void UART0_Init(uint16_t mode);
 void UART0_gets(char *str);
 void UART0_putchar(char data);
@@ -33,16 +35,7 @@ int main(void)
 	itoa(numcad,239,10);
 	newLine();
 	UART0_puts(numcad);
-	
-	
-	/*
-	newLine();
-	cuentaChar(numcad);
-	newLine();
-	invierteNumCad(numcad,cuentaChar(numcad));
-	newLine();
-	UART0_puts(numcad);
-	*/
+
 }
 void delay(void) 
 { 
@@ -109,9 +102,10 @@ void UART0_puts(char *str)
 }
 void itoa(char *str, uint16_t number, uint8_t base)
 {
-	unsigned int cociente, residuo;
+	unsigned int cociente, residuo, cont = 0;
 	unsigned char c;
 	cociente = number;
+	/*
 	do{
 		residuo = cociente%base;
 		cociente = cociente/base;
@@ -122,9 +116,66 @@ void itoa(char *str, uint16_t number, uint8_t base)
 			c = residuo + '0';
 		}
 		*str++ = c;
-	}while( cociente != 0 );
+	}while( cociente != 0 );	
 	*str= '\0';
+	*/
+	while(cociente != 0)
+	{
+		residuo = cociente%base;
+		cociente = cociente/base;
+		cont++;
+	}
+	cont++;
+	
+	residuo = 0;
+	cociente = number;
+	str = str + cont;
+	*str = '\0';
+	do{
+		residuo = cociente%base;
+		cociente = cociente/base;
+		if(residuo > 9)
+		{
+			c = residuo + 55;
+			}else{
+			c = residuo + '0';
+		}
+		*--str = c;
+	}while(cociente !=0);
+	
+	/*do{
+		residuo = cociente%base;
+		cociente = cociente/base;
+		if(residuo > 9)
+		{
+			c = residuo + 55;
+			}else{
+			c = residuo + '0';
+		}
+		push(c);
+		cont++;
+	}while( cociente != 0 );
+	
+	while(cont != 0)
+	{
+		*str++ = pop();	
+		cont--;
+	}
+	*str='\0';*/
 }
+/*void push(char c)
+{
+	asm push bp
+	asm mov bp,sp
+	asm mov al,[bp+4]
+	asm push ax
+	
+	asm pop bp
+}
+char pop( void )
+{
+	asm pop ax
+}*/
 unsigned int atoi(char *str)
 {
 	unsigned int num = 0, exp = 1, val;
