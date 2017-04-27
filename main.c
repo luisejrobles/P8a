@@ -10,7 +10,6 @@
 char UART0_getchar(void);
 unsigned int atoi(char *str);
 void delay(void);
-void escrito_line();
 void itoa(char *str, uint16_t number, uint8_t base);
 void invierteNumCad(char *str, int max);
 void newLine();
@@ -28,20 +27,16 @@ int main(void)
 	uint16_t num;
 	UART0_Init(0);
 	UART0_puts("\n\rUniversidad Autonoma de Baja California\n\r Practica 8a");
-	UART0_getchar();
-	UART0_puts("\n\rIntroduce un número:\n\r");
-	//UART0_gets(cad);
-	//UART0_puts(cad);
-	itoa(cad,123,16);
-	UART0_puts(cad);
-	/*num = atoi(cad);
-	itoa(cad,num,16);
-	UART0_puts("\n\rHex:");
+	UART0_puts("\n\n\rIntroduce un número:\n\r");
+	UART0_gets(cad);
+	num = atoi(cad);
+	itoa(cad,num,10);
+	UART0_puts("\n\rDec:");
 	UART0_puts(cad);
 	itoa(cad,num,2);
 	UART0_puts("\n\rBin:");
 	UART0_puts(cad);
-	*/
+	
 }
 void delay(void) 
 { 
@@ -138,54 +133,32 @@ void itoa(char *str, uint16_t number, uint8_t base)
 		i++;
 		j--;
 	}
-	
-	
-	/*while(**strAux != *str)
-	{
-		if(**strAux != *str)
-		{
-			c = **strAux;
-			**strAux++ = *str;
-			*str-- =  c;
-		}
-	}*/
 }	
 unsigned int atoi(char *str)
 {
 	unsigned int num = 0, exp = 1, val, count = 0;
-	
 	while(*str)
 	{
 		str++;
 		count++;
 	}
-	
-	do
+	//count--;
+	str--;
+	while(count != 0)
 	{
-		val = *str-- - '0';
+		val = *str--;
+		val = val - '0';
 		num = num + (val * exp);
 		exp = exp*10;	
 		count--;
-	}while(count != 0);
+		
+	}
 	
 	return num;
 }
 void newLine(){
 	UART0_putchar(10);
 	UART0_putchar(13);
-}
-void escrito_line(){
-	newLine();
-	newLine();
-	UART0_putchar('C');
-	UART0_putchar('A');
-	UART0_putchar('D');
-	UART0_putchar('E');
-	UART0_putchar('N');
-	UART0_putchar('A');
-	UART0_putchar(':');
-	UART0_putchar(' ');
-	newLine();
 }
 	
 

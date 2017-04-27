@@ -3,29 +3,29 @@ P8a.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000052  00800200  00000278  000002ec  2**0
+  0 .data         00000060  00800200  0000038a  000003fe  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000278  00000000  00000000  00000074  2**1
+  1 .text         0000038a  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  0000033e  2**0
+  2 .comment      00000030  00000000  00000000  0000045e  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000370  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000490  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000070  00000000  00000000  000003b0  2**0
+  4 .debug_aranges 00000068  00000000  00000000  000004d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000109a  00000000  00000000  00000420  2**0
+  5 .debug_info   0000106c  00000000  00000000  00000538  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000cbf  00000000  00000000  000014ba  2**0
+  6 .debug_abbrev 00000c9a  00000000  00000000  000015a4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000585  00000000  00000000  00002179  2**0
+  7 .debug_line   00000543  00000000  00000000  0000223e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000120  00000000  00000000  00002700  2**2
+  8 .debug_frame  0000011c  00000000  00000000  00002784  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000059a  00000000  00000000  00002820  2**0
+  9 .debug_str    0000058d  00000000  00000000  000028a0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000005ed  00000000  00000000  00002dba  2**0
+ 10 .debug_loc    00000681  00000000  00000000  00002e2d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000060  00000000  00000000  000033a7  2**0
+ 11 .debug_ranges 00000058  00000000  00000000  000034ae  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -160,42 +160,51 @@ Disassembly of section .text:
   f4:	12 e0       	ldi	r17, 0x02	; 2
   f6:	a0 e0       	ldi	r26, 0x00	; 0
   f8:	b2 e0       	ldi	r27, 0x02	; 2
-  fa:	e8 e7       	ldi	r30, 0x78	; 120
-  fc:	f2 e0       	ldi	r31, 0x02	; 2
+  fa:	ea e8       	ldi	r30, 0x8A	; 138
+  fc:	f3 e0       	ldi	r31, 0x03	; 3
   fe:	00 e0       	ldi	r16, 0x00	; 0
  100:	0b bf       	out	0x3b, r16	; 59
  102:	02 c0       	rjmp	.+4      	; 0x108 <__do_copy_data+0x14>
  104:	07 90       	elpm	r0, Z+
  106:	0d 92       	st	X+, r0
- 108:	a2 35       	cpi	r26, 0x52	; 82
+ 108:	a0 36       	cpi	r26, 0x60	; 96
  10a:	b1 07       	cpc	r27, r17
  10c:	d9 f7       	brne	.-10     	; 0x104 <__do_copy_data+0x10>
- 10e:	76 d0       	rcall	.+236    	; 0x1fc <main>
- 110:	b1 c0       	rjmp	.+354    	; 0x274 <_exit>
+ 10e:	e8 d0       	rcall	.+464    	; 0x2e0 <main>
+ 110:	3a c1       	rjmp	.+628    	; 0x386 <_exit>
 
 00000112 <__bad_interrupt>:
  112:	76 cf       	rjmp	.-276    	; 0x0 <__vectors>
 
 00000114 <UART0_Init>:
-			*str--='\0';
-			i--;
-		}
-	}while(c != 13);
-	*str = '\0';
-}
+void UART0_Init(uint16_t mode)
+{
+	/*Función para inicializar el puerto serie del ATmega1280/2560 
+	  Si mode es 0    9600,8,N,1
+	  Si mode es 1    19200,8,N,1 */
+	UCSR0A = (1<<U2X0);
  114:	22 e0       	ldi	r18, 0x02	; 2
  116:	20 93 c0 00 	sts	0x00C0, r18	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7000c0>
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|~(1<<UCSZ02);
  11a:	2b ef       	ldi	r18, 0xFB	; 251
  11c:	20 93 c1 00 	sts	0x00C1, r18	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7000c1>
+	UCSR0C = (3<<UCSZ00);
  120:	26 e0       	ldi	r18, 0x06	; 6
  122:	20 93 c2 00 	sts	0x00C2, r18	; 0x8000c2 <__TEXT_REGION_LENGTH__+0x7000c2>
+	if(!mode)
  126:	89 2b       	or	r24, r25
  128:	39 f4       	brne	.+14     	; 0x138 <UART0_Init+0x24>
+	{
+		UBRR0 = 207;
  12a:	8f ec       	ldi	r24, 0xCF	; 207
  12c:	90 e0       	ldi	r25, 0x00	; 0
  12e:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7000c5>
  132:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7000c4>
  136:	08 95       	ret
+		
+	}else if(mode)
+	{
+		UBRR0 = 103;
  138:	87 e6       	ldi	r24, 0x67	; 103
  13a:	90 e0       	ldi	r25, 0x00	; 0
  13c:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7000c5>
@@ -203,270 +212,502 @@ Disassembly of section .text:
  144:	08 95       	ret
 
 00000146 <UART0_getchar>:
+	}
+}	  
+char UART0_getchar(void)
+{	
+	while ( !(UCSR0A & (1<<RXC0)) );
  146:	e0 ec       	ldi	r30, 0xC0	; 192
  148:	f0 e0       	ldi	r31, 0x00	; 0
  14a:	80 81       	ld	r24, Z
  14c:	88 23       	and	r24, r24
  14e:	ec f7       	brge	.-6      	; 0x14a <UART0_getchar+0x4>
+	return UDR0;
  150:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7000c6>
+	
+}
  154:	08 95       	ret
 
 00000156 <UART0_putchar>:
+void UART0_putchar(char data)
+{
+	while ( !(UCSR0A & (1<<UDRE0)) );	
  156:	e0 ec       	ldi	r30, 0xC0	; 192
  158:	f0 e0       	ldi	r31, 0x00	; 0
  15a:	90 81       	ld	r25, Z
  15c:	95 ff       	sbrs	r25, 5
  15e:	fd cf       	rjmp	.-6      	; 0x15a <UART0_putchar+0x4>
+	UDR0 = data;
  160:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7000c6>
  164:	08 95       	ret
 
-00000166 <UART0_puts>:
+00000166 <UART0_gets>:
+}
+void UART0_gets(char *str)
+{
+ 166:	ef 92       	push	r14
+ 168:	ff 92       	push	r15
+ 16a:	0f 93       	push	r16
+ 16c:	1f 93       	push	r17
+ 16e:	cf 93       	push	r28
+ 170:	7c 01       	movw	r14, r24
+	unsigned char c;
+	unsigned int i=0;
+ 172:	00 e0       	ldi	r16, 0x00	; 0
+	do{
+		c = UART0_getchar();
+ 174:	10 e0       	ldi	r17, 0x00	; 0
+ 176:	e7 df       	rcall	.-50     	; 0x146 <UART0_getchar>
+		if( (i<=18)&&(c!=8)&&(c!=13) )
+ 178:	c8 2f       	mov	r28, r24
+ 17a:	03 31       	cpi	r16, 0x13	; 19
+ 17c:	11 05       	cpc	r17, r1
+ 17e:	68 f4       	brcc	.+26     	; 0x19a <UART0_gets+0x34>
+ 180:	88 30       	cpi	r24, 0x08	; 8
+ 182:	69 f0       	breq	.+26     	; 0x19e <UART0_gets+0x38>
+		{
+			UART0_putchar(c);
+ 184:	8d 30       	cpi	r24, 0x0D	; 13
+ 186:	f1 f0       	breq	.+60     	; 0x1c4 <UART0_gets+0x5e>
+			*str++ = c;
+ 188:	e6 df       	rcall	.-52     	; 0x156 <UART0_putchar>
+ 18a:	f7 01       	movw	r30, r14
+			i++;
+ 18c:	c0 83       	st	Z, r28
+ 18e:	0f 5f       	subi	r16, 0xFF	; 255
+	do{
+		c = UART0_getchar();
+		if( (i<=18)&&(c!=8)&&(c!=13) )
+		{
+			UART0_putchar(c);
+			*str++ = c;
+ 190:	1f 4f       	sbci	r17, 0xFF	; 255
+ 192:	c7 01       	movw	r24, r14
+ 194:	01 96       	adiw	r24, 0x01	; 1
+ 196:	7c 01       	movw	r14, r24
+			i++;
+		}
+		if( (c==8) && (i>0) )
+ 198:	ee cf       	rjmp	.-36     	; 0x176 <UART0_gets+0x10>
+ 19a:	88 30       	cpi	r24, 0x08	; 8
+ 19c:	89 f4       	brne	.+34     	; 0x1c0 <UART0_gets+0x5a>
+ 19e:	01 15       	cp	r16, r1
+		{
+			UART0_putchar('\b');
+ 1a0:	11 05       	cpc	r17, r1
+			UART0_putchar(' ');
+ 1a2:	49 f3       	breq	.-46     	; 0x176 <UART0_gets+0x10>
+ 1a4:	88 e0       	ldi	r24, 0x08	; 8
+			UART0_putchar(8);
+ 1a6:	d7 df       	rcall	.-82     	; 0x156 <UART0_putchar>
+ 1a8:	80 e2       	ldi	r24, 0x20	; 32
+ 1aa:	d5 df       	rcall	.-86     	; 0x156 <UART0_putchar>
+			*str--='\0';
+ 1ac:	88 e0       	ldi	r24, 0x08	; 8
+ 1ae:	d3 df       	rcall	.-90     	; 0x156 <UART0_putchar>
+			i--;
+ 1b0:	f7 01       	movw	r30, r14
+ 1b2:	10 82       	st	Z, r1
+		if( (c==8) && (i>0) )
+		{
+			UART0_putchar('\b');
+			UART0_putchar(' ');
+			UART0_putchar(8);
+			*str--='\0';
+ 1b4:	01 50       	subi	r16, 0x01	; 1
+ 1b6:	11 09       	sbc	r17, r1
+ 1b8:	c7 01       	movw	r24, r14
+ 1ba:	01 97       	sbiw	r24, 0x01	; 1
+			i--;
+		}
+	}while(c != 13);
+ 1bc:	7c 01       	movw	r14, r24
+ 1be:	db cf       	rjmp	.-74     	; 0x176 <UART0_gets+0x10>
+	*str = '\0';
+ 1c0:	8d 30       	cpi	r24, 0x0D	; 13
+ 1c2:	c9 f6       	brne	.-78     	; 0x176 <UART0_gets+0x10>
+}
+ 1c4:	f7 01       	movw	r30, r14
+ 1c6:	10 82       	st	Z, r1
+ 1c8:	cf 91       	pop	r28
+ 1ca:	1f 91       	pop	r17
+ 1cc:	0f 91       	pop	r16
+ 1ce:	ff 90       	pop	r15
+ 1d0:	ef 90       	pop	r14
+ 1d2:	08 95       	ret
+
+000001d4 <UART0_puts>:
 void UART0_puts(char *str)
 {
- 166:	cf 93       	push	r28
- 168:	df 93       	push	r29
- 16a:	ec 01       	movw	r28, r24
+ 1d4:	cf 93       	push	r28
+ 1d6:	df 93       	push	r29
+ 1d8:	ec 01       	movw	r28, r24
 	while(*str)
- 16c:	88 81       	ld	r24, Y
- 16e:	88 23       	and	r24, r24
- 170:	29 f0       	breq	.+10     	; 0x17c <UART0_puts+0x16>
+ 1da:	88 81       	ld	r24, Y
+ 1dc:	88 23       	and	r24, r24
+ 1de:	29 f0       	breq	.+10     	; 0x1ea <UART0_puts+0x16>
 	{
 		UART0_putchar(*str++);
- 172:	21 96       	adiw	r28, 0x01	; 1
+ 1e0:	21 96       	adiw	r28, 0x01	; 1
 	}while(c != 13);
 	*str = '\0';
 }
 void UART0_puts(char *str)
 {
 	while(*str)
- 174:	f0 df       	rcall	.-32     	; 0x156 <UART0_putchar>
- 176:	89 91       	ld	r24, Y+
- 178:	81 11       	cpse	r24, r1
+ 1e2:	b9 df       	rcall	.-142    	; 0x156 <UART0_putchar>
+ 1e4:	89 91       	ld	r24, Y+
+ 1e6:	81 11       	cpse	r24, r1
 	{
 		UART0_putchar(*str++);
 	}
 }
- 17a:	fc cf       	rjmp	.-8      	; 0x174 <UART0_puts+0xe>
- 17c:	df 91       	pop	r29
- 17e:	cf 91       	pop	r28
- 180:	08 95       	ret
+ 1e8:	fc cf       	rjmp	.-8      	; 0x1e2 <UART0_puts+0xe>
+ 1ea:	df 91       	pop	r29
+ 1ec:	cf 91       	pop	r28
+ 1ee:	08 95       	ret
 
-00000182 <itoa>:
+000001f0 <itoa>:
 void itoa(char *str, uint16_t number, uint8_t base)
 {
- 182:	0f 93       	push	r16
- 184:	1f 93       	push	r17
- 186:	cf 93       	push	r28
- 188:	df 93       	push	r29
- 18a:	fc 01       	movw	r30, r24
- 18c:	9b 01       	movw	r18, r22
+ 1f0:	0f 93       	push	r16
+ 1f2:	1f 93       	push	r17
+ 1f4:	cf 93       	push	r28
+ 1f6:	df 93       	push	r29
+ 1f8:	fc 01       	movw	r30, r24
+ 1fa:	9b 01       	movw	r18, r22
 	unsigned int cociente, residuo,count = 0, i=0, j;
- 18e:	c0 e0       	ldi	r28, 0x00	; 0
- 190:	d0 e0       	ldi	r29, 0x00	; 0
+ 1fc:	c0 e0       	ldi	r28, 0x00	; 0
+ 1fe:	d0 e0       	ldi	r29, 0x00	; 0
 	char c;
 	cociente = number;
 	do{
 		residuo = cociente%base;
- 192:	04 2f       	mov	r16, r20
- 194:	10 e0       	ldi	r17, 0x00	; 0
- 196:	02 c0       	rjmp	.+4      	; 0x19c <itoa+0x1a>
+ 200:	04 2f       	mov	r16, r20
+ 202:	10 e0       	ldi	r17, 0x00	; 0
+ 204:	02 c0       	rjmp	.+4      	; 0x20a <itoa+0x1a>
 			c = residuo + 55;
 		}else{
 			c = residuo + '0';
 		}
 		*str++ = c;
 		count++;
- 198:	ec 01       	movw	r28, r24
+ 206:	ec 01       	movw	r28, r24
 		{
 			c = residuo + 55;
 		}else{
 			c = residuo + '0';
 		}
 		*str++ = c;
- 19a:	fd 01       	movw	r30, r26
+ 208:	fd 01       	movw	r30, r26
 {
 	unsigned int cociente, residuo,count = 0, i=0, j;
 	char c;
 	cociente = number;
 	do{
 		residuo = cociente%base;
- 19c:	c9 01       	movw	r24, r18
- 19e:	b8 01       	movw	r22, r16
- 1a0:	55 d0       	rcall	.+170    	; 0x24c <__udivmodhi4>
+ 20a:	c9 01       	movw	r24, r18
+ 20c:	b8 01       	movw	r22, r16
+ 20e:	a7 d0       	rcall	.+334    	; 0x35e <__udivmodhi4>
 		cociente = cociente/base;
- 1a2:	26 2f       	mov	r18, r22
- 1a4:	37 2f       	mov	r19, r23
+ 210:	26 2f       	mov	r18, r22
+ 212:	37 2f       	mov	r19, r23
 		if(residuo > 9)
- 1a6:	8a 30       	cpi	r24, 0x0A	; 10
- 1a8:	91 05       	cpc	r25, r1
- 1aa:	10 f0       	brcs	.+4      	; 0x1b0 <itoa+0x2e>
+ 214:	8a 30       	cpi	r24, 0x0A	; 10
+ 216:	91 05       	cpc	r25, r1
+ 218:	10 f0       	brcs	.+4      	; 0x21e <itoa+0x2e>
 		{
 			c = residuo + 55;
- 1ac:	89 5c       	subi	r24, 0xC9	; 201
- 1ae:	01 c0       	rjmp	.+2      	; 0x1b2 <itoa+0x30>
+ 21a:	89 5c       	subi	r24, 0xC9	; 201
+ 21c:	01 c0       	rjmp	.+2      	; 0x220 <itoa+0x30>
 		}else{
 			c = residuo + '0';
- 1b0:	80 5d       	subi	r24, 0xD0	; 208
+ 21e:	80 5d       	subi	r24, 0xD0	; 208
 		}
 		*str++ = c;
- 1b2:	df 01       	movw	r26, r30
- 1b4:	11 96       	adiw	r26, 0x01	; 1
- 1b6:	80 83       	st	Z, r24
+ 220:	df 01       	movw	r26, r30
+ 222:	11 96       	adiw	r26, 0x01	; 1
+ 224:	80 83       	st	Z, r24
 		count++;
- 1b8:	ce 01       	movw	r24, r28
- 1ba:	01 96       	adiw	r24, 0x01	; 1
+ 226:	ce 01       	movw	r24, r28
+ 228:	01 96       	adiw	r24, 0x01	; 1
 	}while( cociente != 0 );	
- 1bc:	21 15       	cp	r18, r1
- 1be:	31 05       	cpc	r19, r1
- 1c0:	59 f7       	brne	.-42     	; 0x198 <itoa+0x16>
+ 22a:	21 15       	cp	r18, r1
+ 22c:	31 05       	cpc	r19, r1
+ 22e:	59 f7       	brne	.-42     	; 0x206 <itoa+0x16>
 	*str= '\0';
- 1c2:	11 82       	std	Z+1, r1	; 0x01
+ 230:	11 82       	std	Z+1, r1	; 0x01
 	str -=count;
- 1c4:	a8 1b       	sub	r26, r24
- 1c6:	b9 0b       	sbc	r27, r25
+ 232:	a8 1b       	sub	r26, r24
+ 234:	b9 0b       	sbc	r27, r25
 	j = count -1;
 	
 	while(i < j)
- 1c8:	20 97       	sbiw	r28, 0x00	; 0
- 1ca:	99 f0       	breq	.+38     	; 0x1f2 <itoa+0x70>
- 1cc:	fd 01       	movw	r30, r26
- 1ce:	a8 0f       	add	r26, r24
- 1d0:	b9 1f       	adc	r27, r25
- 1d2:	80 e0       	ldi	r24, 0x00	; 0
- 1d4:	90 e0       	ldi	r25, 0x00	; 0
+ 236:	20 97       	sbiw	r28, 0x00	; 0
+ 238:	99 f0       	breq	.+38     	; 0x260 <itoa+0x70>
+ 23a:	fd 01       	movw	r30, r26
+ 23c:	a8 0f       	add	r26, r24
+ 23e:	b9 1f       	adc	r27, r25
+ 240:	80 e0       	ldi	r24, 0x00	; 0
+ 242:	90 e0       	ldi	r25, 0x00	; 0
 	{
 		if( *(str+i) != *(str+j))
- 1d6:	20 81       	ld	r18, Z
- 1d8:	3e 91       	ld	r19, -X
- 1da:	23 17       	cp	r18, r19
- 1dc:	11 f0       	breq	.+4      	; 0x1e2 <itoa+0x60>
+ 244:	20 81       	ld	r18, Z
+ 246:	3e 91       	ld	r19, -X
+ 248:	23 17       	cp	r18, r19
+ 24a:	11 f0       	breq	.+4      	; 0x250 <itoa+0x60>
 		{
 			c = *(str+i);
 			*(str+i) = *(str+j);
- 1de:	30 83       	st	Z, r19
+ 24c:	30 83       	st	Z, r19
 			*(str+j) = c;	
- 1e0:	2c 93       	st	X, r18
+ 24e:	2c 93       	st	X, r18
 		}
 		i++;
- 1e2:	01 96       	adiw	r24, 0x01	; 1
- 1e4:	31 96       	adiw	r30, 0x01	; 1
+ 250:	01 96       	adiw	r24, 0x01	; 1
+ 252:	31 96       	adiw	r30, 0x01	; 1
 	}while( cociente != 0 );	
 	*str= '\0';
 	str -=count;
 	j = count -1;
 	
 	while(i < j)
- 1e6:	9e 01       	movw	r18, r28
- 1e8:	28 1b       	sub	r18, r24
- 1ea:	39 0b       	sbc	r19, r25
- 1ec:	82 17       	cp	r24, r18
- 1ee:	93 07       	cpc	r25, r19
- 1f0:	90 f3       	brcs	.-28     	; 0x1d6 <itoa+0x54>
-			c = **strAux;
-			**strAux++ = *str;
-			*str-- =  c;
+ 254:	9e 01       	movw	r18, r28
+ 256:	28 1b       	sub	r18, r24
+ 258:	39 0b       	sbc	r19, r25
+ 25a:	82 17       	cp	r24, r18
+ 25c:	93 07       	cpc	r25, r19
+ 25e:	90 f3       	brcs	.-28     	; 0x244 <itoa+0x54>
+			*(str+j) = c;	
 		}
-	}*/
+		i++;
+		j--;
+	}
 }	
- 1f2:	df 91       	pop	r29
- 1f4:	cf 91       	pop	r28
- 1f6:	1f 91       	pop	r17
- 1f8:	0f 91       	pop	r16
- 1fa:	08 95       	ret
+ 260:	df 91       	pop	r29
+ 262:	cf 91       	pop	r28
+ 264:	1f 91       	pop	r17
+ 266:	0f 91       	pop	r16
+ 268:	08 95       	ret
 
-000001fc <main>:
+0000026a <atoi>:
+unsigned int atoi(char *str)
+{
+	unsigned int num = 0, exp = 1, val, count = 0;
+	while(*str)
+ 26a:	fc 01       	movw	r30, r24
+ 26c:	20 81       	ld	r18, Z
+ 26e:	22 23       	and	r18, r18
+ 270:	89 f1       	breq	.+98     	; 0x2d4 <atoi+0x6a>
+ 272:	31 96       	adiw	r30, 0x01	; 1
+ 274:	80 e0       	ldi	r24, 0x00	; 0
+ 276:	90 e0       	ldi	r25, 0x00	; 0
+ 278:	01 c0       	rjmp	.+2      	; 0x27c <atoi+0x12>
+ 27a:	fa 01       	movw	r30, r20
+	{
+		str++;
+ 27c:	bf 01       	movw	r22, r30
+		count++;
+ 27e:	01 96       	adiw	r24, 0x01	; 1
+ 280:	af 01       	movw	r20, r30
+ 282:	4f 5f       	subi	r20, 0xFF	; 255
+ 284:	5f 4f       	sbci	r21, 0xFF	; 255
+	}
+}	
+unsigned int atoi(char *str)
+{
+	unsigned int num = 0, exp = 1, val, count = 0;
+	while(*str)
+ 286:	20 81       	ld	r18, Z
+ 288:	21 11       	cpse	r18, r1
+ 28a:	f7 cf       	rjmp	.-18     	; 0x27a <atoi+0x10>
+		str++;
+		count++;
+	}
+	//count--;
+	str--;
+	while(count != 0)
+ 28c:	00 97       	sbiw	r24, 0x00	; 0
+ 28e:	29 f1       	breq	.+74     	; 0x2da <atoi+0x70>
+ 290:	68 1b       	sub	r22, r24
+ 292:	79 0b       	sbc	r23, r25
+ 294:	21 e0       	ldi	r18, 0x01	; 1
+ 296:	30 e0       	ldi	r19, 0x00	; 0
+ 298:	80 e0       	ldi	r24, 0x00	; 0
+ 29a:	90 e0       	ldi	r25, 0x00	; 0
+	{
+		val = *str--;
+ 29c:	42 91       	ld	r20, -Z
+ 29e:	50 e0       	ldi	r21, 0x00	; 0
+		val = val - '0';
+		num = num + (val * exp);
+ 2a0:	40 53       	subi	r20, 0x30	; 48
+ 2a2:	51 09       	sbc	r21, r1
+ 2a4:	42 9f       	mul	r20, r18
+ 2a6:	d0 01       	movw	r26, r0
+ 2a8:	43 9f       	mul	r20, r19
+ 2aa:	b0 0d       	add	r27, r0
+ 2ac:	52 9f       	mul	r21, r18
+ 2ae:	b0 0d       	add	r27, r0
+ 2b0:	11 24       	eor	r1, r1
+ 2b2:	8a 0f       	add	r24, r26
+ 2b4:	9b 1f       	adc	r25, r27
+		exp = exp*10;	
+ 2b6:	a9 01       	movw	r20, r18
+ 2b8:	44 0f       	add	r20, r20
+ 2ba:	55 1f       	adc	r21, r21
+ 2bc:	22 0f       	add	r18, r18
+ 2be:	33 1f       	adc	r19, r19
+ 2c0:	22 0f       	add	r18, r18
+ 2c2:	33 1f       	adc	r19, r19
+ 2c4:	22 0f       	add	r18, r18
+ 2c6:	33 1f       	adc	r19, r19
+ 2c8:	24 0f       	add	r18, r20
+ 2ca:	35 1f       	adc	r19, r21
+		str++;
+		count++;
+	}
+	//count--;
+	str--;
+	while(count != 0)
+ 2cc:	e6 17       	cp	r30, r22
+ 2ce:	f7 07       	cpc	r31, r23
+ 2d0:	29 f7       	brne	.-54     	; 0x29c <atoi+0x32>
+ 2d2:	08 95       	ret
+		j--;
+	}
+}	
+unsigned int atoi(char *str)
+{
+	unsigned int num = 0, exp = 1, val, count = 0;
+ 2d4:	80 e0       	ldi	r24, 0x00	; 0
+ 2d6:	90 e0       	ldi	r25, 0x00	; 0
+ 2d8:	08 95       	ret
+ 2da:	80 e0       	ldi	r24, 0x00	; 0
+ 2dc:	90 e0       	ldi	r25, 0x00	; 0
+		count--;
+		
+	}
+	
+	return num;
+}
+ 2de:	08 95       	ret
+
+000002e0 <main>:
 void UART0_putchar(char data);
 void UART0_puts(char *str);
 void inMTTY();
  
 int main(void) 
 { 
- 1fc:	cf 93       	push	r28
- 1fe:	df 93       	push	r29
- 200:	cd b7       	in	r28, 0x3d	; 61
- 202:	de b7       	in	r29, 0x3e	; 62
- 204:	64 97       	sbiw	r28, 0x14	; 20
- 206:	0f b6       	in	r0, 0x3f	; 63
- 208:	f8 94       	cli
- 20a:	de bf       	out	0x3e, r29	; 62
- 20c:	0f be       	out	0x3f, r0	; 63
- 20e:	cd bf       	out	0x3d, r28	; 61
+ 2e0:	0f 93       	push	r16
+ 2e2:	1f 93       	push	r17
+ 2e4:	cf 93       	push	r28
+ 2e6:	df 93       	push	r29
+ 2e8:	cd b7       	in	r28, 0x3d	; 61
+ 2ea:	de b7       	in	r29, 0x3e	; 62
+ 2ec:	64 97       	sbiw	r28, 0x14	; 20
+ 2ee:	0f b6       	in	r0, 0x3f	; 63
+ 2f0:	f8 94       	cli
+ 2f2:	de bf       	out	0x3e, r29	; 62
+ 2f4:	0f be       	out	0x3f, r0	; 63
+ 2f6:	cd bf       	out	0x3d, r28	; 61
 	char cad[20];
 	//char numcad[10];
 	uint16_t num;
 	UART0_Init(0);
- 210:	80 e0       	ldi	r24, 0x00	; 0
- 212:	90 e0       	ldi	r25, 0x00	; 0
- 214:	7f df       	rcall	.-258    	; 0x114 <UART0_Init>
+ 2f8:	80 e0       	ldi	r24, 0x00	; 0
+ 2fa:	90 e0       	ldi	r25, 0x00	; 0
+ 2fc:	0b df       	rcall	.-490    	; 0x114 <UART0_Init>
 	UART0_puts("\n\rUniversidad Autonoma de Baja California\n\r Practica 8a");
- 216:	80 e0       	ldi	r24, 0x00	; 0
- 218:	92 e0       	ldi	r25, 0x02	; 2
-	UART0_getchar();
- 21a:	a5 df       	rcall	.-182    	; 0x166 <UART0_puts>
-	UART0_puts("\n\rIntroduce un número:\n\r");
- 21c:	94 df       	rcall	.-216    	; 0x146 <UART0_getchar>
- 21e:	88 e3       	ldi	r24, 0x38	; 56
- 220:	92 e0       	ldi	r25, 0x02	; 2
- 222:	a1 df       	rcall	.-190    	; 0x166 <UART0_puts>
-	//UART0_gets(cad);
-	//UART0_puts(cad);
-	itoa(cad,123,16);
- 224:	40 e1       	ldi	r20, 0x10	; 16
- 226:	6b e7       	ldi	r22, 0x7B	; 123
- 228:	70 e0       	ldi	r23, 0x00	; 0
- 22a:	ce 01       	movw	r24, r28
- 22c:	01 96       	adiw	r24, 0x01	; 1
+ 2fe:	80 e0       	ldi	r24, 0x00	; 0
+ 300:	92 e0       	ldi	r25, 0x02	; 2
+	UART0_puts("\n\n\rIntroduce un número:\n\r");
+ 302:	68 df       	rcall	.-304    	; 0x1d4 <UART0_puts>
+ 304:	88 e3       	ldi	r24, 0x38	; 56
+	UART0_gets(cad);
+ 306:	92 e0       	ldi	r25, 0x02	; 2
+ 308:	65 df       	rcall	.-310    	; 0x1d4 <UART0_puts>
+ 30a:	ce 01       	movw	r24, r28
+	num = atoi(cad);
+ 30c:	01 96       	adiw	r24, 0x01	; 1
+ 30e:	2b df       	rcall	.-426    	; 0x166 <UART0_gets>
+ 310:	ce 01       	movw	r24, r28
+ 312:	01 96       	adiw	r24, 0x01	; 1
+	itoa(cad,num,10);
+ 314:	aa df       	rcall	.-172    	; 0x26a <atoi>
+ 316:	8c 01       	movw	r16, r24
+ 318:	4a e0       	ldi	r20, 0x0A	; 10
+ 31a:	bc 01       	movw	r22, r24
+	UART0_puts("\n\rDec:");
+ 31c:	ce 01       	movw	r24, r28
+ 31e:	01 96       	adiw	r24, 0x01	; 1
+ 320:	67 df       	rcall	.-306    	; 0x1f0 <itoa>
 	UART0_puts(cad);
- 22e:	a9 df       	rcall	.-174    	; 0x182 <itoa>
- 230:	ce 01       	movw	r24, r28
- 232:	01 96       	adiw	r24, 0x01	; 1
- 234:	98 df       	rcall	.-208    	; 0x166 <UART0_puts>
-	UART0_puts(cad);
+ 322:	82 e5       	ldi	r24, 0x52	; 82
+ 324:	92 e0       	ldi	r25, 0x02	; 2
 	itoa(cad,num,2);
+ 326:	56 df       	rcall	.-340    	; 0x1d4 <UART0_puts>
+ 328:	ce 01       	movw	r24, r28
+ 32a:	01 96       	adiw	r24, 0x01	; 1
+ 32c:	53 df       	rcall	.-346    	; 0x1d4 <UART0_puts>
+ 32e:	42 e0       	ldi	r20, 0x02	; 2
 	UART0_puts("\n\rBin:");
+ 330:	b8 01       	movw	r22, r16
+ 332:	ce 01       	movw	r24, r28
+ 334:	01 96       	adiw	r24, 0x01	; 1
+ 336:	5c df       	rcall	.-328    	; 0x1f0 <itoa>
 	UART0_puts(cad);
-	*/
+ 338:	89 e5       	ldi	r24, 0x59	; 89
+ 33a:	92 e0       	ldi	r25, 0x02	; 2
+ 33c:	4b df       	rcall	.-362    	; 0x1d4 <UART0_puts>
+ 33e:	ce 01       	movw	r24, r28
+	
 }
- 236:	80 e0       	ldi	r24, 0x00	; 0
- 238:	90 e0       	ldi	r25, 0x00	; 0
- 23a:	64 96       	adiw	r28, 0x14	; 20
- 23c:	0f b6       	in	r0, 0x3f	; 63
- 23e:	f8 94       	cli
- 240:	de bf       	out	0x3e, r29	; 62
- 242:	0f be       	out	0x3f, r0	; 63
- 244:	cd bf       	out	0x3d, r28	; 61
- 246:	df 91       	pop	r29
- 248:	cf 91       	pop	r28
- 24a:	08 95       	ret
+ 340:	01 96       	adiw	r24, 0x01	; 1
+ 342:	48 df       	rcall	.-368    	; 0x1d4 <UART0_puts>
+ 344:	80 e0       	ldi	r24, 0x00	; 0
+ 346:	90 e0       	ldi	r25, 0x00	; 0
+ 348:	64 96       	adiw	r28, 0x14	; 20
+ 34a:	0f b6       	in	r0, 0x3f	; 63
+ 34c:	f8 94       	cli
+ 34e:	de bf       	out	0x3e, r29	; 62
+ 350:	0f be       	out	0x3f, r0	; 63
+ 352:	cd bf       	out	0x3d, r28	; 61
+ 354:	df 91       	pop	r29
+ 356:	cf 91       	pop	r28
+ 358:	1f 91       	pop	r17
+ 35a:	0f 91       	pop	r16
+ 35c:	08 95       	ret
 
-0000024c <__udivmodhi4>:
- 24c:	aa 1b       	sub	r26, r26
- 24e:	bb 1b       	sub	r27, r27
- 250:	51 e1       	ldi	r21, 0x11	; 17
- 252:	07 c0       	rjmp	.+14     	; 0x262 <__udivmodhi4_ep>
+0000035e <__udivmodhi4>:
+ 35e:	aa 1b       	sub	r26, r26
+ 360:	bb 1b       	sub	r27, r27
+ 362:	51 e1       	ldi	r21, 0x11	; 17
+ 364:	07 c0       	rjmp	.+14     	; 0x374 <__udivmodhi4_ep>
 
-00000254 <__udivmodhi4_loop>:
- 254:	aa 1f       	adc	r26, r26
- 256:	bb 1f       	adc	r27, r27
- 258:	a6 17       	cp	r26, r22
- 25a:	b7 07       	cpc	r27, r23
- 25c:	10 f0       	brcs	.+4      	; 0x262 <__udivmodhi4_ep>
- 25e:	a6 1b       	sub	r26, r22
- 260:	b7 0b       	sbc	r27, r23
+00000366 <__udivmodhi4_loop>:
+ 366:	aa 1f       	adc	r26, r26
+ 368:	bb 1f       	adc	r27, r27
+ 36a:	a6 17       	cp	r26, r22
+ 36c:	b7 07       	cpc	r27, r23
+ 36e:	10 f0       	brcs	.+4      	; 0x374 <__udivmodhi4_ep>
+ 370:	a6 1b       	sub	r26, r22
+ 372:	b7 0b       	sbc	r27, r23
 
-00000262 <__udivmodhi4_ep>:
- 262:	88 1f       	adc	r24, r24
- 264:	99 1f       	adc	r25, r25
- 266:	5a 95       	dec	r21
- 268:	a9 f7       	brne	.-22     	; 0x254 <__udivmodhi4_loop>
- 26a:	80 95       	com	r24
- 26c:	90 95       	com	r25
- 26e:	bc 01       	movw	r22, r24
- 270:	cd 01       	movw	r24, r26
- 272:	08 95       	ret
+00000374 <__udivmodhi4_ep>:
+ 374:	88 1f       	adc	r24, r24
+ 376:	99 1f       	adc	r25, r25
+ 378:	5a 95       	dec	r21
+ 37a:	a9 f7       	brne	.-22     	; 0x366 <__udivmodhi4_loop>
+ 37c:	80 95       	com	r24
+ 37e:	90 95       	com	r25
+ 380:	bc 01       	movw	r22, r24
+ 382:	cd 01       	movw	r24, r26
+ 384:	08 95       	ret
 
-00000274 <_exit>:
- 274:	f8 94       	cli
+00000386 <_exit>:
+ 386:	f8 94       	cli
 
-00000276 <__stop_program>:
- 276:	ff cf       	rjmp	.-2      	; 0x276 <__stop_program>
+00000388 <__stop_program>:
+ 388:	ff cf       	rjmp	.-2      	; 0x388 <__stop_program>
