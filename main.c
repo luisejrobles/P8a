@@ -8,6 +8,7 @@
 #define my_UBRR(bauds) 16000000/8/bauds-1
 
 char UART0_getchar(void);
+unsigned int atoi(char *str);
 void delay(void);
 void escrito_line();
 void itoa(char *str, uint16_t number, uint8_t base);
@@ -23,19 +24,24 @@ void inMTTY();
 int main(void) 
 { 
 	char cad[20];
-	char numcad[10];
-	//uint16_t num;
+	//char numcad[10];
+	uint16_t num;
 	UART0_Init(0);
-	inMTTY();
-	UART0_gets(cad);
-	escrito_line();
+	UART0_puts("\n\rUniversidad Autonoma de Baja California\n\r Practica 8a");
+	UART0_getchar();
+	UART0_puts("\n\rIntroduce un número:\n\r");
+	//UART0_gets(cad);
+	//UART0_puts(cad);
+	itoa(cad,123,16);
 	UART0_puts(cad);
-	itoa(numcad,239,10);
-	newLine();
-	UART0_puts(numcad);
-	newLine();
-	newLine();
-	
+	/*num = atoi(cad);
+	itoa(cad,num,16);
+	UART0_puts("\n\rHex:");
+	UART0_puts(cad);
+	itoa(cad,num,2);
+	UART0_puts("\n\rBin:");
+	UART0_puts(cad);
+	*/
 }
 void delay(void) 
 { 
@@ -102,10 +108,9 @@ void UART0_puts(char *str)
 }
 void itoa(char *str, uint16_t number, uint8_t base)
 {
-	unsigned int cociente, residuo;
-	char c, **strAux;
+	unsigned int cociente, residuo,count = 0, i=0, j;
+	char c;
 	cociente = number;
-	strAux = &str;
 	do{
 		residuo = cociente%base;
 		cociente = cociente/base;
@@ -116,10 +121,26 @@ void itoa(char *str, uint16_t number, uint8_t base)
 			c = residuo + '0';
 		}
 		*str++ = c;
+		count++;
 	}while( cociente != 0 );	
 	*str= '\0';
-	str = str -1;
-	while(**strAux != *str)
+	str -=count;
+	j = count -1;
+	
+	while(i < j)
+	{
+		if( *(str+i) != *(str+j))
+		{
+			c = *(str+i);
+			*(str+i) = *(str+j);
+			*(str+j) = c;	
+		}
+		i++;
+		j--;
+	}
+	
+	
+	/*while(**strAux != *str)
 	{
 		if(**strAux != *str)
 		{
@@ -127,7 +148,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
 			**strAux++ = *str;
 			*str-- =  c;
 		}
-	}
+	}*/
 }	
 unsigned int atoi(char *str)
 {
@@ -135,73 +156,19 @@ unsigned int atoi(char *str)
 	
 	while(*str)
 	{
-		*str++;
+		str++;
 		count++;
 	}
-	while(count != 0)
+	
+	do
 	{
 		val = *str-- - '0';
 		num = num + (val * exp);
 		exp = exp*10;	
-	}
+		count--;
+	}while(count != 0);
+	
 	return num;
-}
-void inMTTY()
-{
-	UART0_putchar('U');
-	UART0_putchar('N');
-	UART0_putchar('I');
-	UART0_putchar('V');
-	UART0_putchar('E');
-	UART0_putchar('R');
-	UART0_putchar('S');
-	UART0_putchar('I');
-	UART0_putchar('D');
-	UART0_putchar('A');
-	UART0_putchar('D');
-	UART0_putchar(' ');
-	UART0_putchar('A');
-	UART0_putchar('U');
-	UART0_putchar('T');
-	UART0_putchar('O');
-	UART0_putchar('N');
-	UART0_putchar('O');
-	UART0_putchar('M');
-	UART0_putchar('A');
-	UART0_putchar(' ');
-	UART0_putchar('D');
-	UART0_putchar('E');
-	UART0_putchar(' ');
-	UART0_putchar('B');
-	UART0_putchar('A');
-	UART0_putchar('J');
-	UART0_putchar('A');
-	UART0_putchar(' ');
-	UART0_putchar('C');
-	UART0_putchar('A');
-	UART0_putchar('L');
-	UART0_putchar('I');
-	UART0_putchar('F');
-	UART0_putchar('O');
-	UART0_putchar('R');
-	UART0_putchar('N');
-	UART0_putchar('I');
-	UART0_putchar('A');
-	UART0_putchar(10);
-	UART0_putchar(13);	
-	UART0_putchar('P');
-	UART0_putchar('R');
-	UART0_putchar('A');
-	UART0_putchar('C');
-	UART0_putchar('T');
-	UART0_putchar('I');
-	UART0_putchar('C');
-	UART0_putchar('A');
-	UART0_putchar(' ');
-	UART0_putchar('8');
-	UART0_putchar('a');
-	UART0_putchar(10);
-	UART0_putchar(13);
 }
 void newLine(){
 	UART0_putchar(10);
