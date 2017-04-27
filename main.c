@@ -7,9 +7,7 @@
 #include <avr/io.h>
 #define my_UBRR(bauds) 16000000/8/bauds-1
 
-char pop( void );
 char UART0_getchar(void);
-unsigned int cuentaChar(char *str);
 void delay(void);
 void escrito_line();
 void itoa(char *str, uint16_t number, uint8_t base);
@@ -21,7 +19,7 @@ void UART0_gets(char *str);
 void UART0_putchar(char data);
 void UART0_puts(char *str);
 void inMTTY();
-
+ 
 int main(void) 
 { 
 	char cad[20];
@@ -35,7 +33,9 @@ int main(void)
 	itoa(numcad,239,10);
 	newLine();
 	UART0_puts(numcad);
-
+	newLine();
+	newLine();
+	
 }
 void delay(void) 
 { 
@@ -58,7 +58,7 @@ void UART0_Init(uint16_t mode)
 	{
 		UBRR0 = 103;
 	}
-}
+}	  
 char UART0_getchar(void)
 {	
 	while ( !(UCSR0A & (1<<RXC0)) );
@@ -102,10 +102,10 @@ void UART0_puts(char *str)
 }
 void itoa(char *str, uint16_t number, uint8_t base)
 {
-	unsigned int cociente, residuo, cont = 0;
-	unsigned char c;
+	unsigned int cociente, residuo;
+	char c, **strAux;
 	cociente = number;
-	/*
+	strAux = &str;
 	do{
 		residuo = cociente%base;
 		cociente = cociente/base;
@@ -118,94 +118,33 @@ void itoa(char *str, uint16_t number, uint8_t base)
 		*str++ = c;
 	}while( cociente != 0 );	
 	*str= '\0';
-	*/
-	while(cociente != 0)
+	str = str -1;
+	while(**strAux != *str)
 	{
-		residuo = cociente%base;
-		cociente = cociente/base;
-		cont++;
-	}
-	cont++;
-	
-	residuo = 0;
-	cociente = number;
-	str = str + cont;
-	*str = '\0';
-	do{
-		residuo = cociente%base;
-		cociente = cociente/base;
-		if(residuo > 9)
+		if(**strAux != *str)
 		{
-			c = residuo + 55;
-			}else{
-			c = residuo + '0';
+			c = **strAux;
+			**strAux++ = *str;
+			*str-- =  c;
 		}
-		*--str = c;
-	}while(cociente !=0);
-	
-	/*do{
-		residuo = cociente%base;
-		cociente = cociente/base;
-		if(residuo > 9)
-		{
-			c = residuo + 55;
-			}else{
-			c = residuo + '0';
-		}
-		push(c);
-		cont++;
-	}while( cociente != 0 );
-	
-	while(cont != 0)
-	{
-		*str++ = pop();	
-		cont--;
 	}
-	*str='\0';*/
-}
-/*void push(char c)
-{
-	asm push bp
-	asm mov bp,sp
-	asm mov al,[bp+4]
-	asm push ax
-	
-	asm pop bp
-}
-char pop( void )
-{
-	asm pop ax
-}*/
+}	
 unsigned int atoi(char *str)
 {
-	unsigned int num = 0, exp = 1, val;
+	unsigned int num = 0, exp = 1, val, count = 0;
+	
 	while(*str)
 	{
 		*str++;
+		count++;
 	}
-	while(str != 0)
+	while(count != 0)
 	{
-		val = *--str - '0';
-		num = num+ (val * exp);
+		val = *str-- - '0';
+		num = num + (val * exp);
 		exp = exp*10;	
 	}
 	return num;
-}
-
-unsigned int cuentaChar(char *str)
-{
-	unsigned int cont = 0;
-	unsigned char c;
-	while(*str)
-	{
-		*str++;
-		cont++;
-	}
-	c = cont + '0';
-	newLine();
-	UART0_putchar(' ');
-	UART0_putchar(c);
-	return cont;
 }
 void inMTTY()
 {
