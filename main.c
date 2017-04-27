@@ -11,8 +11,6 @@ char UART0_getchar(void);
 unsigned int atoi(char *str);
 void delay(void);
 void itoa(char *str, uint16_t number, uint8_t base);
-void invierteNumCad(char *str, int max);
-void newLine();
 void push(char c);
 void UART0_Init(uint16_t mode);
 void UART0_gets(char *str);
@@ -48,16 +46,16 @@ void UART0_Init(uint16_t mode)
 	/*Función para inicializar el puerto serie del ATmega1280/2560 
 	  Si mode es 0    9600,8,N,1
 	  Si mode es 1    19200,8,N,1 */
-	UCSR0A = (1<<U2X0);
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|~(1<<UCSZ02);
-	UCSR0C = (3<<UCSZ00);
+	UCSR0A = (1<<U2X0);		//Usart double speed
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|~(1<<UCSZ02); // Reception enable | Transmission enable | 9bit disable
+	UCSR0C = (3<<UCSZ00);	//8bit enable
 	if(!mode)
 	{
-		UBRR0 = 207;
+		UBRR0 = 207;	//9600 baud rate UBRR
 		
 	}else if(mode)
 	{
-		UBRR0 = 103;
+		UBRR0 = 103;	//19.2k baud rate UBRR
 	}
 }	  
 char UART0_getchar(void)
@@ -77,13 +75,13 @@ void UART0_gets(char *str)
 	unsigned int i=0;
 	do{
 		c = UART0_getchar();
-		if( (i<=18)&&(c!=8)&&(c!=13) )
+		if( (i<=18)&&(c!=8)&&(c!=13) )	//validacion menor al fin del arreglo, backspace y enter
 		{
 			UART0_putchar(c);
 			*str++ = c;
 			i++;
 		}
-		if( (c==8) && (i>0) )
+		if( (c==8) && (i>0) )		//validacion backspace
 		{
 			UART0_putchar('\b');
 			UART0_putchar(' ');
@@ -109,11 +107,11 @@ void itoa(char *str, uint16_t number, uint8_t base)
 	do{
 		residuo = cociente%base;
 		cociente = cociente/base;
-		if(residuo > 9)
+		if(residuo > 9)	//si es mayor a 9, agregar el respectivo para imprimir letra.
 		{
 			c = residuo + 55;
 		}else{
-			c = residuo + '0';
+			c = residuo + '0'; //agregar el respectivo para crear el caracter de numero
 		}
 		*str++ = c;
 		count++;
@@ -121,7 +119,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
 	*str= '\0';
 	str -=count;
 	j = count -1;
-	
+	//==============invertir cadena==================
 	while(i < j)
 	{
 		if( *(str+i) != *(str+j))
@@ -137,28 +135,22 @@ void itoa(char *str, uint16_t number, uint8_t base)
 unsigned int atoi(char *str)
 {
 	unsigned int num = 0, exp = 1, val, count = 0;
+	//contando digitos en la cadena============
 	while(*str)
 	{
 		str++;
 		count++;
 	}
-	//count--;
-	str--;
+	str--;	//no tomando en cuenta '\0'
 	while(count != 0)
 	{
-		val = *str--;
-		val = val - '0';
-		num = num + (val * exp);
-		exp = exp*10;	
-		count--;
-		
+		val = *str--;	//tomando el valor
+		val = val - '0';	//obteniendo valor crudo
+		num = num + (val * exp);	//almacenando valor crudo*exp en num
+		exp = exp*10;
+		count--;	
 	}
-	
 	return num;
-}
-void newLine(){
-	UART0_putchar(10);
-	UART0_putchar(13);
 }
 	
 

@@ -11,21 +11,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000490  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000068  00000000  00000000  000004d0  2**0
+  4 .debug_aranges 00000060  00000000  00000000  000004d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000106c  00000000  00000000  00000538  2**0
+  5 .debug_info   00001034  00000000  00000000  00000530  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000c9a  00000000  00000000  000015a4  2**0
+  6 .debug_abbrev 00000c84  00000000  00000000  00001564  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000543  00000000  00000000  0000223e  2**0
+  7 .debug_line   00000526  00000000  00000000  000021e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000011c  00000000  00000000  00002784  2**2
+  8 .debug_frame  0000010c  00000000  00000000  00002710  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000058d  00000000  00000000  000028a0  2**0
+  9 .debug_str    00000585  00000000  00000000  0000281c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000681  00000000  00000000  00002e2d  2**0
+ 10 .debug_loc    00000681  00000000  00000000  00002da1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000058  00000000  00000000  000034ae  2**0
+ 11 .debug_ranges 00000050  00000000  00000000  00003422  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -182,20 +182,20 @@ void UART0_Init(uint16_t mode)
 	/*Función para inicializar el puerto serie del ATmega1280/2560 
 	  Si mode es 0    9600,8,N,1
 	  Si mode es 1    19200,8,N,1 */
-	UCSR0A = (1<<U2X0);
+	UCSR0A = (1<<U2X0);		//Usart double speed
  114:	22 e0       	ldi	r18, 0x02	; 2
  116:	20 93 c0 00 	sts	0x00C0, r18	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7000c0>
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|~(1<<UCSZ02);
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|~(1<<UCSZ02); // Reception enable | Transmission enable | 9bit disable
  11a:	2b ef       	ldi	r18, 0xFB	; 251
  11c:	20 93 c1 00 	sts	0x00C1, r18	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7000c1>
-	UCSR0C = (3<<UCSZ00);
+	UCSR0C = (3<<UCSZ00);	//8bit enable
  120:	26 e0       	ldi	r18, 0x06	; 6
  122:	20 93 c2 00 	sts	0x00C2, r18	; 0x8000c2 <__TEXT_REGION_LENGTH__+0x7000c2>
 	if(!mode)
  126:	89 2b       	or	r24, r25
  128:	39 f4       	brne	.+14     	; 0x138 <UART0_Init+0x24>
 	{
-		UBRR0 = 207;
+		UBRR0 = 207;	//9600 baud rate UBRR
  12a:	8f ec       	ldi	r24, 0xCF	; 207
  12c:	90 e0       	ldi	r25, 0x00	; 0
  12e:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7000c5>
@@ -204,7 +204,7 @@ void UART0_Init(uint16_t mode)
 		
 	}else if(mode)
 	{
-		UBRR0 = 103;
+		UBRR0 = 103;	//19.2k baud rate UBRR
  138:	87 e6       	ldi	r24, 0x67	; 103
  13a:	90 e0       	ldi	r25, 0x00	; 0
  13c:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7000c5>
@@ -258,7 +258,7 @@ void UART0_gets(char *str)
 		c = UART0_getchar();
  174:	10 e0       	ldi	r17, 0x00	; 0
  176:	e7 df       	rcall	.-50     	; 0x146 <UART0_getchar>
-		if( (i<=18)&&(c!=8)&&(c!=13) )
+		if( (i<=18)&&(c!=8)&&(c!=13) )	//validacion menor al fin del arreglo, backspace y enter
  178:	c8 2f       	mov	r28, r24
  17a:	03 31       	cpi	r16, 0x13	; 19
  17c:	11 05       	cpc	r17, r1
@@ -277,7 +277,7 @@ void UART0_gets(char *str)
  18e:	0f 5f       	subi	r16, 0xFF	; 255
 	do{
 		c = UART0_getchar();
-		if( (i<=18)&&(c!=8)&&(c!=13) )
+		if( (i<=18)&&(c!=8)&&(c!=13) )	//validacion menor al fin del arreglo, backspace y enter
 		{
 			UART0_putchar(c);
 			*str++ = c;
@@ -287,7 +287,7 @@ void UART0_gets(char *str)
  196:	7c 01       	movw	r14, r24
 			i++;
 		}
-		if( (c==8) && (i>0) )
+		if( (c==8) && (i>0) )		//validacion backspace
  198:	ee cf       	rjmp	.-36     	; 0x176 <UART0_gets+0x10>
  19a:	88 30       	cpi	r24, 0x08	; 8
  19c:	89 f4       	brne	.+34     	; 0x1c0 <UART0_gets+0x5a>
@@ -308,7 +308,7 @@ void UART0_gets(char *str)
 			i--;
  1b0:	f7 01       	movw	r30, r14
  1b2:	10 82       	st	Z, r1
-		if( (c==8) && (i>0) )
+		if( (c==8) && (i>0) )		//validacion backspace
 		{
 			UART0_putchar('\b');
 			UART0_putchar(' ');
@@ -388,7 +388,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
  204:	02 c0       	rjmp	.+4      	; 0x20a <itoa+0x1a>
 			c = residuo + 55;
 		}else{
-			c = residuo + '0';
+			c = residuo + '0'; //agregar el respectivo para crear el caracter de numero
 		}
 		*str++ = c;
 		count++;
@@ -396,7 +396,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
 		{
 			c = residuo + 55;
 		}else{
-			c = residuo + '0';
+			c = residuo + '0'; //agregar el respectivo para crear el caracter de numero
 		}
 		*str++ = c;
  208:	fd 01       	movw	r30, r26
@@ -412,7 +412,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
 		cociente = cociente/base;
  210:	26 2f       	mov	r18, r22
  212:	37 2f       	mov	r19, r23
-		if(residuo > 9)
+		if(residuo > 9)	//si es mayor a 9, agregar el respectivo para imprimir letra.
  214:	8a 30       	cpi	r24, 0x0A	; 10
  216:	91 05       	cpc	r25, r1
  218:	10 f0       	brcs	.+4      	; 0x21e <itoa+0x2e>
@@ -421,7 +421,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
  21a:	89 5c       	subi	r24, 0xC9	; 201
  21c:	01 c0       	rjmp	.+2      	; 0x220 <itoa+0x30>
 		}else{
-			c = residuo + '0';
+			c = residuo + '0'; //agregar el respectivo para crear el caracter de numero
  21e:	80 5d       	subi	r24, 0xD0	; 208
 		}
 		*str++ = c;
@@ -441,7 +441,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
  232:	a8 1b       	sub	r26, r24
  234:	b9 0b       	sbc	r27, r25
 	j = count -1;
-	
+	//==============invertir cadena==================
 	while(i < j)
  236:	20 97       	sbiw	r28, 0x00	; 0
  238:	99 f0       	breq	.+38     	; 0x260 <itoa+0x70>
@@ -470,7 +470,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
 	*str= '\0';
 	str -=count;
 	j = count -1;
-	
+	//==============invertir cadena==================
 	while(i < j)
  254:	9e 01       	movw	r18, r28
  256:	28 1b       	sub	r18, r24
@@ -494,6 +494,7 @@ void itoa(char *str, uint16_t number, uint8_t base)
 unsigned int atoi(char *str)
 {
 	unsigned int num = 0, exp = 1, val, count = 0;
+	//contando digitos en la cadena============
 	while(*str)
  26a:	fc 01       	movw	r30, r24
  26c:	20 81       	ld	r18, Z
@@ -512,20 +513,20 @@ unsigned int atoi(char *str)
  280:	af 01       	movw	r20, r30
  282:	4f 5f       	subi	r20, 0xFF	; 255
  284:	5f 4f       	sbci	r21, 0xFF	; 255
-	}
 }	
 unsigned int atoi(char *str)
 {
 	unsigned int num = 0, exp = 1, val, count = 0;
+	//contando digitos en la cadena============
 	while(*str)
  286:	20 81       	ld	r18, Z
  288:	21 11       	cpse	r18, r1
  28a:	f7 cf       	rjmp	.-18     	; 0x27a <atoi+0x10>
+	{
 		str++;
 		count++;
 	}
-	//count--;
-	str--;
+	str--;	//no tomando en cuenta '\0'
 	while(count != 0)
  28c:	00 97       	sbiw	r24, 0x00	; 0
  28e:	29 f1       	breq	.+74     	; 0x2da <atoi+0x70>
@@ -536,11 +537,11 @@ unsigned int atoi(char *str)
  298:	80 e0       	ldi	r24, 0x00	; 0
  29a:	90 e0       	ldi	r25, 0x00	; 0
 	{
-		val = *str--;
+		val = *str--;	//tomando el valor
  29c:	42 91       	ld	r20, -Z
  29e:	50 e0       	ldi	r21, 0x00	; 0
-		val = val - '0';
-		num = num + (val * exp);
+		val = val - '0';	//obteniendo valor crudo
+		num = num + (val * exp);	//almacenando valor crudo*exp en num
  2a0:	40 53       	subi	r20, 0x30	; 48
  2a2:	51 09       	sbc	r21, r1
  2a4:	42 9f       	mul	r20, r18
@@ -552,7 +553,7 @@ unsigned int atoi(char *str)
  2b0:	11 24       	eor	r1, r1
  2b2:	8a 0f       	add	r24, r26
  2b4:	9b 1f       	adc	r25, r27
-		exp = exp*10;	
+		exp = exp*10;
  2b6:	a9 01       	movw	r20, r18
  2b8:	44 0f       	add	r20, r20
  2ba:	55 1f       	adc	r21, r21
@@ -564,11 +565,11 @@ unsigned int atoi(char *str)
  2c6:	33 1f       	adc	r19, r19
  2c8:	24 0f       	add	r18, r20
  2ca:	35 1f       	adc	r19, r21
+	{
 		str++;
 		count++;
 	}
-	//count--;
-	str--;
+	str--;	//no tomando en cuenta '\0'
 	while(count != 0)
  2cc:	e6 17       	cp	r30, r22
  2ce:	f7 07       	cpc	r31, r23
@@ -585,10 +586,10 @@ unsigned int atoi(char *str)
  2d8:	08 95       	ret
  2da:	80 e0       	ldi	r24, 0x00	; 0
  2dc:	90 e0       	ldi	r25, 0x00	; 0
-		count--;
-		
+		num = num + (val * exp);	//almacenando valor crudo*exp en num
+		exp = exp*10;
+		count--;	
 	}
-	
 	return num;
 }
  2de:	08 95       	ret
