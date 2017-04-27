@@ -1,4 +1,4 @@
-main.d main.o: .././main.c \
+UART.d UART.o: .././UART.c \
  d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -10,8 +10,7 @@ main.d main.o: .././main.c \
  d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\common.h \
  d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
- d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
- .././UART.h
+ d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h
 
 d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -36,5 +35,3 @@ d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\v
 d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h:
 
 d:\program\ files\ (x86)\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
-
-.././UART.h:
